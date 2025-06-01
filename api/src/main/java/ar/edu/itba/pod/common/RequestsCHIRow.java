@@ -13,16 +13,9 @@ public class RequestsCHIRow implements DataSerializable {
     private String ownerDepartment;
     private String status;
     private LocalDateTime createdDate;
-    //----------------------------------- [
-    private int streetNumber;
-    private char streetDirection;
-    private String streetName;
-    private String streetType;
-    private String communityArea;
-    //-----------------------------------  ] --> Could be turned into address class [
-    private double latitude;
-    private double longitude;
-    //----------------------------------- ] --> Could be turned to geoLocation class
+    private Address address;
+    private GeoLocation geoLocation;
+
     public RequestsCHIRow(String srNumber, String srShortCode, String ownerDepartment, String status,
                           LocalDateTime createdDate, int streetNumber, char streetDirection, String streetName,
                           String streetType, String communityArea, double latitude, double longitude) {
@@ -31,13 +24,8 @@ public class RequestsCHIRow implements DataSerializable {
         this.ownerDepartment = ownerDepartment;
         this.status = status;
         this.createdDate = createdDate;
-        this.streetNumber = streetNumber;
-        this.streetDirection = streetDirection;
-        this.streetName = streetName;
-        this.streetType = streetType;
-        this.communityArea = communityArea;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.address = new Address(streetNumber, streetDirection, streetName, streetType, communityArea);
+        this.geoLocation = new GeoLocation(latitude, longitude);
     }
 
     @Override
@@ -47,13 +35,13 @@ public class RequestsCHIRow implements DataSerializable {
         out.writeUTF(ownerDepartment);
         out.writeUTF(status);
         out.writeObject(createdDate);
-        out.writeInt(streetNumber);
-        out.writeChar(streetDirection);
-        out.writeUTF(streetName);
-        out.writeUTF(streetType);
-        out.writeUTF(communityArea);
-        out.writeDouble(latitude);
-        out.writeDouble(longitude);
+        out.writeInt(address.getStreetNumber());
+        out.writeChar(address.getStreetDirection());
+        out.writeUTF(address.getStreetName());
+        out.writeUTF(address.getStreetType());
+        out.writeUTF(address.getCommunityArea());
+        out.writeDouble(geoLocation.getLatitude());
+        out.writeDouble(geoLocation.getLongitude());
     }
 
     @Override
@@ -63,13 +51,19 @@ public class RequestsCHIRow implements DataSerializable {
         ownerDepartment = in.readUTF();
         status = in.readUTF();
         createdDate = in.readObject();
-        streetNumber = in.readInt();
-        streetDirection = in.readChar();
-        streetName = in.readUTF();
-        streetType = in.readUTF();
-        communityArea = in.readUTF();
-        latitude = in.readDouble();
-        longitude = in.readDouble();
+
+        int streetNumber = in.readInt();
+        char streetDirection = in.readChar();
+        String streetName = in.readUTF();
+        String streetType = in.readUTF();
+        String communityArea = in.readUTF();
+
+        address = new Address(streetNumber, streetDirection, streetName, streetType, communityArea);
+
+        double latitude = in.readDouble();
+        double longitude = in.readDouble();
+
+        geoLocation = new GeoLocation(latitude, longitude);
     }
 
     public String getSrNumber() {
@@ -92,31 +86,11 @@ public class RequestsCHIRow implements DataSerializable {
         return createdDate;
     }
 
-    public int getStreetNumber() {
-        return streetNumber;
+    public Address getAddress() {
+        return address;
     }
 
-    public char getStreetDirection() {
-        return streetDirection;
-    }
-
-    public String getStreetName() {
-        return streetName;
-    }
-
-    public String getStreetType() {
-        return streetType;
-    }
-
-    public String getCommunityArea() {
-        return communityArea;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
+    public GeoLocation getGeoLocation() {
+        return geoLocation;
     }
 }

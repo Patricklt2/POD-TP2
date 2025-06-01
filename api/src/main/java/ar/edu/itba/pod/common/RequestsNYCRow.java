@@ -16,10 +16,8 @@ public class RequestsNYCRow implements DataSerializable {
     private String status;  // Maybe could be turned into enum or special type
     private String borough;
 
-    //----------------------------------- [
-    private double latitude;
-    private double longitude;
-    //----------------------------------- ] --> Could be turned to geoLocation class
+    private GeoLocation geoLocation;
+
     public RequestsNYCRow(int uniqueKey, LocalDateTime createdDate, String agencyName, String complaintType,
                           String incidentAddress, String status, String borough, double latitude, double longitude) {
         this.uniqueKey = uniqueKey;
@@ -29,8 +27,7 @@ public class RequestsNYCRow implements DataSerializable {
         this.incidentAddress = incidentAddress;
         this.status = status;
         this.borough = borough;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.geoLocation = new GeoLocation(latitude, longitude);
     }
 
     @Override
@@ -42,8 +39,8 @@ public class RequestsNYCRow implements DataSerializable {
             out.writeUTF(incidentAddress);
             out.writeUTF(status);
             out.writeUTF(borough);
-            out.writeDouble(latitude);
-            out.writeDouble(longitude);
+            out.writeDouble(geoLocation.getLatitude());
+            out.writeDouble(geoLocation.getLongitude());
     }
 
     @Override
@@ -55,8 +52,11 @@ public class RequestsNYCRow implements DataSerializable {
             incidentAddress = in.readUTF();
             status = in.readUTF();
             borough = in.readUTF();
-            latitude = in.readDouble();
-            longitude = in.readDouble();
+
+            double latitude = in.readDouble();
+            double longitude = in.readDouble();
+
+            geoLocation = new GeoLocation(latitude, longitude);
     }
 
     public int getUniqueKey() {
@@ -83,12 +83,8 @@ public class RequestsNYCRow implements DataSerializable {
         return borough;
     }
 
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
+    public GeoLocation getGeoLocation() {
+        return geoLocation;
     }
 
     public String getIncidentAddress(){
