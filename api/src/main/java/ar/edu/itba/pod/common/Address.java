@@ -13,14 +13,12 @@ public class Address implements DataSerializable {
     private char streetDirection;
     private String streetName;
     private String streetType;
-    private String communityArea;
 
-    public Address(int streetNumber, char streetDirection, String streetName, String streetType, String communityArea) {
+    public Address(int streetNumber, char streetDirection, String streetName, String streetType) {
         this.streetNumber = streetNumber;
         this.streetDirection = streetDirection;
         this.streetName = streetName;
         this.streetType = streetType;
-        this.communityArea = communityArea;
     }
 
     @Override
@@ -29,7 +27,6 @@ public class Address implements DataSerializable {
         out.writeChar(streetDirection);
         out.writeUTF(streetName);
         out.writeUTF(streetType);
-        out.writeUTF(communityArea);
     }
 
     @Override
@@ -38,7 +35,6 @@ public class Address implements DataSerializable {
         streetDirection = in.readChar();
         streetName = in.readUTF();
         streetType = in.readUTF();
-        communityArea = in.readUTF();
     }
 
     public int getStreetNumber() {
@@ -57,13 +53,9 @@ public class Address implements DataSerializable {
         return streetType;
     }
 
-    public String getCommunityArea() {
-        return communityArea;
-    }
-
     @Override
     public int hashCode() {
-        return Objects.hash(streetNumber, streetDirection, streetName, streetType, communityArea);
+        return Objects.hash(streetNumber, streetDirection, streetName, streetType);
     }
 
     @Override
@@ -72,7 +64,6 @@ public class Address implements DataSerializable {
                 this.streetNumber == that.streetNumber &&
                 this.streetDirection == that.streetDirection &&
                 this.streetName.equals(that.streetName) &&
-                this.streetType.equals(that.streetType) &&
-                this.communityArea.equals(that.communityArea);
+                this.streetType.equals(that.streetType);
     }
 }

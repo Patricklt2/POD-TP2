@@ -14,6 +14,7 @@ public class RequestsCHIRow implements DataSerializable {
     private String status;
     private LocalDateTime createdDate;
     private Address address;
+    private String communityArea;
     private GeoLocation geoLocation;
 
     public RequestsCHIRow(String srNumber, String srShortCode, String ownerDepartment, String status,
@@ -24,7 +25,8 @@ public class RequestsCHIRow implements DataSerializable {
         this.ownerDepartment = ownerDepartment;
         this.status = status;
         this.createdDate = createdDate;
-        this.address = new Address(streetNumber, streetDirection, streetName, streetType, communityArea);
+        this.address = new Address(streetNumber, streetDirection, streetName, streetType);
+        this.communityArea = communityArea;
         this.geoLocation = new GeoLocation(latitude, longitude);
     }
 
@@ -39,7 +41,7 @@ public class RequestsCHIRow implements DataSerializable {
         out.writeChar(address.getStreetDirection());
         out.writeUTF(address.getStreetName());
         out.writeUTF(address.getStreetType());
-        out.writeUTF(address.getCommunityArea());
+        out.writeUTF(communityArea);
         out.writeDouble(geoLocation.getLatitude());
         out.writeDouble(geoLocation.getLongitude());
     }
@@ -56,13 +58,12 @@ public class RequestsCHIRow implements DataSerializable {
         char streetDirection = in.readChar();
         String streetName = in.readUTF();
         String streetType = in.readUTF();
-        String communityArea = in.readUTF();
+        address = new Address(streetNumber, streetDirection, streetName, streetType);
 
-        address = new Address(streetNumber, streetDirection, streetName, streetType, communityArea);
+        communityArea = in.readUTF();
 
         double latitude = in.readDouble();
         double longitude = in.readDouble();
-
         geoLocation = new GeoLocation(latitude, longitude);
     }
 
@@ -88,6 +89,10 @@ public class RequestsCHIRow implements DataSerializable {
 
     public Address getAddress() {
         return address;
+    }
+
+    public String getCommunityArea() {
+        return communityArea;
     }
 
     public GeoLocation getGeoLocation() {
