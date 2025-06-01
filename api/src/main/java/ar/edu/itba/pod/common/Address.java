@@ -5,6 +5,7 @@ import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.DataSerializable;
 
 import java.io.IOException;
+import java.util.Objects;
 
 //Might not need to be serializable, will keep it like that for now
 public class Address implements DataSerializable {
@@ -58,5 +59,20 @@ public class Address implements DataSerializable {
 
     public String getCommunityArea() {
         return communityArea;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(streetNumber, streetDirection, streetName, streetType, communityArea);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Address that &&
+                this.streetNumber == that.streetNumber &&
+                this.streetDirection == that.streetDirection &&
+                this.streetName.equals(that.streetName) &&
+                this.streetType.equals(that.streetType) &&
+                this.communityArea.equals(that.communityArea);
     }
 }
