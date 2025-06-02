@@ -13,6 +13,8 @@ public class TypesNYCRow implements DataSerializable {
         this.complaintType = complaintType;
     }
 
+    public TypesNYCRow() {}
+
     @Override
     public void writeData(ObjectDataOutput out) throws IOException {
         out.writeUTF(complaintType);

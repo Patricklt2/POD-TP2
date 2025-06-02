@@ -17,6 +17,8 @@ public class RequestsCHIRow implements DataSerializable {
     private String communityArea;
     private GeoLocation geoLocation;
 
+    public RequestsCHIRow() {}
+
     public RequestsCHIRow(String srNumber, String srShortCode, String ownerDepartment, String status,
                           LocalDateTime createdDate, int streetNumber, char streetDirection, String streetName,
                           String streetType, String communityArea, double latitude, double longitude) {

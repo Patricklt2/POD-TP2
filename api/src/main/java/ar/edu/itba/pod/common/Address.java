@@ -14,6 +14,8 @@ public class Address implements DataSerializable {
     private String streetName;
     private String streetType;
 
+    public Address() {}
+
     public Address(int streetNumber, char streetDirection, String streetName, String streetType) {
         this.streetNumber = streetNumber;
         this.streetDirection = streetDirection;

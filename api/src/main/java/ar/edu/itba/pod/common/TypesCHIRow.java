@@ -10,6 +10,8 @@ public class TypesCHIRow implements DataSerializable {
     private String srShortCode;
     private String srType;
 
+    public TypesCHIRow() {}
+
     public TypesCHIRow(String srShortCode, String srType) {
         this.srShortCode = srShortCode;
         this.srType = srType;

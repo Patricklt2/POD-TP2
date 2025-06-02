@@ -18,6 +18,8 @@ public class RequestsNYCRow implements DataSerializable {
 
     private GeoLocation geoLocation;
 
+    public RequestsNYCRow() {}
+
     public RequestsNYCRow(int uniqueKey, LocalDateTime createdDate, String agencyName, String complaintType,
                           String incidentAddress, String status, String borough, double latitude, double longitude) {
         this.uniqueKey = uniqueKey;

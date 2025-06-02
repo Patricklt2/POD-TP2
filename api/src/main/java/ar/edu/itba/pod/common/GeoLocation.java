@@ -12,6 +12,8 @@ public class GeoLocation implements DataSerializable {
     private double latitude;
     private double longitude;
 
+    public GeoLocation() {}
+
     public GeoLocation(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
