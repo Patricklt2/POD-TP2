@@ -90,16 +90,16 @@ public class ClientQuery1 extends Base {
                             .map(line -> new RequestsCHIRow(
                                     line[0],
                                     srCodeToDescription.get(line[1]),
+                                    line[2],
                                     line[3],
-                                    line[4],
-                                    LocalDateTime.parse(line[5], dateTimeFormatter),
-                                    Integer.parseInt(line[6]),
-                                    line[7].charAt(0),
-                                    line[4],
-                                    line[5],
-                                    line[6],
-                                    Double.parseDouble(line[7]),
-                                    Double.parseDouble(line[8])))
+                                    LocalDateTime.parse(line[4], dateTimeFormatter),
+                                    Integer.parseInt(line[5]),
+                                    line[6].charAt(0),
+                                    line[7],
+                                    line[8],
+                                    line[9],
+                                    Double.parseDouble(line[10]),
+                                    Double.parseDouble(line[11])))
                             .forEach(nycRequest -> requestsMultiMap.put(auxCounter.getAndIncrement(), nycRequest));
                 }
             }
