@@ -19,7 +19,7 @@
 		<fileSet>
 			<directory>src/main/assembly/overlay</directory>
 			<outputDirectory></outputDirectory>
-			<filtered>false</filtered>
+			<filtered>true</filtered>
 		</fileSet>
 		<fileSet>
 			<directory>${project.build.directory}/site</directory>
