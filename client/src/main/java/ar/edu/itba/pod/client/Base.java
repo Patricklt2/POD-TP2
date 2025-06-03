@@ -73,7 +73,7 @@ public abstract class Base {
         String inPath = env.getProperty("inPath");
 
         return switch (city.toUpperCase()) {
-            case "NYC" -> Paths.get(inPath, "serviceRequestsNYC-Short.csv");
+            case "NYC" -> Paths.get(inPath, "serviceRequestsNYC.csv");
             case "CHI" -> Paths.get(inPath, "serviceRequestsCHI.csv");
             default -> throw new IllegalArgumentException("Invalid city: must be NYC or CHI");
         };
