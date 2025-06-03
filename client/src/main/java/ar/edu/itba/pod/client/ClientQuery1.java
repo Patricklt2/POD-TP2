@@ -83,6 +83,7 @@ public class ClientQuery1 extends Base {
                                 .forEach(parts -> srCodeToDescription.put(parts[0], parts[1]));
                     }
                     //This can most certainly be optimized
+                    // Should probably add another map reduce! But maybe we could keep that for v2 ;)
 
                     lines.skip(1)
                             .map(line -> line.split(";"))
