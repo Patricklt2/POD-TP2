@@ -13,7 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-
 public abstract class Base {
 
     protected static final Properties env = System.getProperties();
@@ -31,6 +30,7 @@ public abstract class Base {
         requireProperty("inPath");
         requireProperty("outPath");
         requireProperty("city");
+        requireProperty("addresses");
 
         List<String> addresses = Arrays.stream(env.get("addresses").toString().split(";")).toList();
 
@@ -49,7 +49,8 @@ public abstract class Base {
         }
 
         // Client Config
-        ClientConfig clientConfig = new ClientConfig().setGroupConfig(groupConfig).setNetworkConfig(clientNetworkConfig);
+        ClientConfig clientConfig = new ClientConfig().setGroupConfig(groupConfig)
+                .setNetworkConfig(clientNetworkConfig);
 
         // Node Client
         hazelcastInstance = HazelcastClient.newHazelcastClient(clientConfig);

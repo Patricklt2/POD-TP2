@@ -6,4 +6,4 @@ $PATH_TO_CODE_BASE=${pwd}
 
 $MAIN_CLASS="ar.edu.itba.pod.server.Server"
 
-java  $JAVA_OPTS -cp 'lib/jars/*' @args $MAIN_CLASS
+java  $JAVA_OPTS -cp "$PSScriptRoot/lib/jars/*;$JAVA_CLASSPATH" @args $MAIN_CLASS
