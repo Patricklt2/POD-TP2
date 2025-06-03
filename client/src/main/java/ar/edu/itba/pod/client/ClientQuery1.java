@@ -77,7 +77,7 @@ public class ClientQuery1 extends Base {
                     //This can most certainly be optimized
                     Map<String, String> srCodeToDescription = new HashMap<>();
 
-                    try (Stream<String> serviceLines = Files.lines(getRequestsFilePath(city), StandardCharsets.UTF_8)){
+                    try (Stream<String> serviceLines = Files.lines(getTypesFilePath(city), StandardCharsets.UTF_8)){
                         serviceLines.skip(1)
                                 .map(line -> line.split(";"))
                                 .forEach(parts -> srCodeToDescription.put(parts[0], parts[1]));
