@@ -6,12 +6,8 @@ import ar.edu.itba.pod.v1.ComplaintCollator;
 import ar.edu.itba.pod.v1.ComplaintMapperNYC;
 import ar.edu.itba.pod.v1.ComplaintReducerFactory;
 import com.hazelcast.client.HazelcastClient;
-import com.hazelcast.client.config.ClientConfig;
-import com.hazelcast.client.config.ClientNetworkConfig;
-import com.hazelcast.config.GroupConfig;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.ICompletableFuture;
-import com.hazelcast.core.IMap;
 import com.hazelcast.core.MultiMap;
 import com.hazelcast.mapreduce.Job;
 import com.hazelcast.mapreduce.JobTracker;
@@ -22,49 +18,40 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
-public class ClientQuery1 {
+public class ClientQuery1 extends Base {
 
-    private static final Logger logger = LoggerFactory.getLogger(Client.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClientQuery1.class);
+
+    public ClientQuery1() {
+        super(logger);
+    }
 
     public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
         logger.info("ClientQuery1 Starting ...");
+        new ar.edu.itba.pod.client.ClientQuery1().run();
 
         try {
-            // Group Config
-            GroupConfig groupConfig = new GroupConfig().setName("l12345").setPassword("l12345-pass");
-
-            // Client Network Config
-            ClientNetworkConfig clientNetworkConfig = new ClientNetworkConfig();
-            clientNetworkConfig.addAddress("127.0.0.1");
-
-            // Client Config
-            ClientConfig clientConfig = new ClientConfig().setGroupConfig(groupConfig).setNetworkConfig(clientNetworkConfig);
-
-            // Node Client
-            HazelcastInstance hazelcastInstance = HazelcastClient.newHazelcastClient(clientConfig);
-
-            MultiMap<Long, RequestsNYCRow> nycRequestsMultiMap = hazelcastInstance.getMultiMap("nycRequests");
+            HazelcastInstance hz = getHazelcastInstance();
+            MultiMap<Long, RequestsNYCRow> nycRequestsMultiMap = hz.getMultiMap("nycRequests");
             KeyValueSource<Long, RequestsNYCRow> nycRequestsKeyValueSource = KeyValueSource.fromMultiMap(nycRequestsMultiMap);
 
             // Job Tracker
-            JobTracker jobTracker = hazelcastInstance.getJobTracker("complaintsNyc");
+            JobTracker jobTracker = hz.getJobTracker("complaintsNyc");
 
             // Text File Reading and Key Value Source Loading
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
             AtomicLong auxCounter = new AtomicLong(0);
 
-            try (Stream<String> lines = Files.lines(Paths.get(args[0]), StandardCharsets.UTF_8)) {
+            try (Stream<String> lines = Files.lines(getRequestsFilePath(env.getProperty("city")), StandardCharsets.UTF_8)) {
                 lines.skip(1)
                         .map(line -> line.split(";"))
                         .map(line -> new RequestsNYCRow(
