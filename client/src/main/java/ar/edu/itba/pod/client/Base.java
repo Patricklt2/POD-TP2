@@ -30,6 +30,7 @@ public abstract class Base {
         requireProperty("inPath");
         requireProperty("outPath");
         requireProperty("city");
+        requireProperty("addresses");
 
         List<String> addresses = Arrays.stream(env.get("addresses").toString().split(";")).toList();
 
