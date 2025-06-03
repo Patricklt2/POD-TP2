@@ -5,11 +5,14 @@ import ar.edu.itba.pod.common.RequestRow;
 import com.hazelcast.mapreduce.Context;
 import com.hazelcast.mapreduce.Mapper;
 
-public class ComplaintMapper implements Mapper<Long, RequestRow, Complaint, Long>  {
+@SuppressWarnings("deprecation")
+public class ComplaintMapper implements Mapper<Long, RequestRow, Complaint, Long> {
     private static final Long ONE = 1L;
+
     @Override
     public void map(Long key, RequestRow row, Context<Complaint, Long> context) {
-        if (row == null) return;
+        if (row == null)
+            return;
 
         context.emit(new Complaint(row.getComplaintType(), row.getAgency()), ONE);
     }
