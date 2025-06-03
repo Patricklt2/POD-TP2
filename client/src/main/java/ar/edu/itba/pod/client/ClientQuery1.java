@@ -39,6 +39,7 @@ public class ClientQuery1 extends Base {
         super(logger);
     }
 
+    @SuppressWarnings("deprecation")
     public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
         logger.info("ClientQuery1 Starting ...");
         new ar.edu.itba.pod.client.ClientQuery1().run();
@@ -58,7 +59,7 @@ public class ClientQuery1 extends Base {
 
             String city = env.getProperty("city");
             try (Stream<String> lines = Files.lines(getRequestsFilePath(city), StandardCharsets.UTF_8)) {
-                if(city.equals("NYC")) {
+                if (city.equals("NYC")) {
                     lines.skip(1)
                             .map(line -> line.split(";"))
                             .map(line -> new RequestsNYCRow(
@@ -70,8 +71,7 @@ public class ClientQuery1 extends Base {
                                     line[5],
                                     line[6],
                                     Double.parseDouble(line[7]),
-                                    Double.parseDouble(line[8])
-                            ))
+                                    Double.parseDouble(line[8])))
                             .forEach(nycRequest -> requestsMultiMap.put(auxCounter.getAndIncrement(), nycRequest));
                 } else {
                     //This can most certainly be optimized
@@ -98,8 +98,7 @@ public class ClientQuery1 extends Base {
                                     line[5],
                                     line[6],
                                     Double.parseDouble(line[7]),
-                                    Double.parseDouble(line[8])
-                            ))
+                                    Double.parseDouble(line[8])))
                             .forEach(nycRequest -> requestsMultiMap.put(auxCounter.getAndIncrement(), nycRequest));
                 }
             }
@@ -117,8 +116,9 @@ public class ClientQuery1 extends Base {
         }
     }
 
-    private static void writeOutputToCsvQuery1(List<Map.Entry<Complaint, Long>> result){
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(env.getProperty("outPath"),"query1Output.csv"))) {
+    private static void writeOutputToCsvQuery1(List<Map.Entry<Complaint, Long>> result) {
+        try (BufferedWriter writer = Files
+                .newBufferedWriter(Paths.get(env.getProperty("outPath"), "query1Output.csv"))) {
             writer.write("type;agency;requests");
             writer.newLine();
 
@@ -138,4 +138,3 @@ public class ClientQuery1 extends Base {
         }
     }
 }
-
