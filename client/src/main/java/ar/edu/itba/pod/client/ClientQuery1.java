@@ -24,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -73,16 +74,26 @@ public class ClientQuery1 extends Base {
                             ))
                             .forEach(nycRequest -> requestsMultiMap.put(auxCounter.getAndIncrement(), nycRequest));
                 } else {
+                    //This can most certainly be optimized
+                    Map<String, String> srCodeToDescription = new HashMap<>();
+
+                    try (Stream<String> serviceLines = Files.lines(getRequestsFilePath(city), StandardCharsets.UTF_8)){
+                        serviceLines.skip(1)
+                                .map(line -> line.split(";"))
+                                .forEach(parts -> srCodeToDescription.put(parts[0], parts[1]));
+                    }
+                    //This can most certainly be optimized
+
                     lines.skip(1)
                             .map(line -> line.split(";"))
                             .map(line -> new RequestsCHIRow(
                                     line[0],
-                                    line[1],
+                                    srCodeToDescription.get(line[1]),
                                     line[3],
                                     line[4],
                                     LocalDateTime.parse(line[5], dateTimeFormatter),
                                     Integer.parseInt(line[6]),
-                                    line[7].toCharArray()[0],
+                                    line[7].charAt(0),
                                     line[4],
                                     line[5],
                                     line[6],
