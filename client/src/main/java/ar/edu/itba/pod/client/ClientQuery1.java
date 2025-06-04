@@ -46,66 +46,17 @@ public class ClientQuery1 extends Base {
 
         try {
             HazelcastInstance hz = getHazelcastInstance();
-            MultiMap<Long, RequestRow> requestsMultiMap = hz.getMultiMap("requests");
-            KeyValueSource<Long, RequestRow> requestsKeyValueSource = KeyValueSource.fromMultiMap(requestsMultiMap);
+            MultiMap<Long, Complaint> requestsMultiMap = hz.getMultiMap("requests");
+            KeyValueSource<Long, Complaint> requestsKeyValueSource = KeyValueSource.fromMultiMap(requestsMultiMap);
 
             // Job Tracker
             JobTracker jobTracker = hz.getJobTracker("complaints");
 
-            // Text File Reading and Key Value Source Loading
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-            AtomicLong auxCounter = new AtomicLong(0);
-
-            String city = env.getProperty("city");
-            try (Stream<String> lines = Files.lines(getRequestsFilePath(city), StandardCharsets.UTF_8)) {
-                if (city.equals("NYC")) {
-                    lines.skip(1)
-                            .map(line -> line.split(";"))
-                            .map(line -> new RequestsNYCRow(
-                                    Integer.parseInt(line[0]),
-                                    LocalDateTime.parse(line[1], dateTimeFormatter),
-                                    line[2],
-                                    line[3],
-                                    line[4],
-                                    line[5],
-                                    line[6],
-                                    Double.parseDouble(line[7]),
-                                    Double.parseDouble(line[8])))
-                            .forEach(nycRequest -> requestsMultiMap.put(auxCounter.getAndIncrement(), nycRequest));
-                } else {
-                    //This can most certainly be optimized
-                    Map<String, String> srCodeToDescription = new HashMap<>();
-
-                    try (Stream<String> serviceLines = Files.lines(getTypesFilePath(city), StandardCharsets.UTF_8)){
-                        serviceLines.skip(1)
-                                .map(line -> line.split(";"))
-                                .forEach(parts -> srCodeToDescription.put(parts[0], parts[1]));
-                    }
-                    //This can most certainly be optimized
-                    // Should probably add another map reduce! But maybe we could keep that for v2 ;)
-
-                    lines.skip(1)
-                            .map(line -> line.split(";"))
-                            .map(line -> new RequestsCHIRow(
-                                    line[0],
-                                    srCodeToDescription.get(line[1]),
-                                    line[2],
-                                    line[3],
-                                    LocalDateTime.parse(line[4], dateTimeFormatter),
-                                    Integer.parseInt(line[5]),
-                                    line[6].charAt(0),
-                                    line[7],
-                                    line[8],
-                                    line[9],
-                                    Double.parseDouble(line[10]),
-                                    Double.parseDouble(line[11])))
-                            .forEach(nycRequest -> requestsMultiMap.put(auxCounter.getAndIncrement(), nycRequest));
-                }
-            }
+            parseCsv(requestsMultiMap, line -> new Complaint(line[3], line[2]),
+                    (line, srCodeToDescription) -> new Complaint(srCodeToDescription.get(line[1]), line[2]));
 
             // MapReduce Job
-            Job<Long, RequestRow> job = jobTracker.newJob(requestsKeyValueSource);
+            Job<Long, Complaint> job = jobTracker.newJob(requestsKeyValueSource);
             ICompletableFuture<List<Map.Entry<Complaint, Long>>> future = job
                     .mapper(new ComplaintMapper())
                     .reducer(new ComplaintReducerFactory())
@@ -135,7 +86,7 @@ public class ClientQuery1 extends Base {
                 writer.newLine();
             }
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            logger.error("Error while writing output for query1",e);
         }
     }
 }

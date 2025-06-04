@@ -6,11 +6,11 @@ import com.hazelcast.mapreduce.Context;
 import com.hazelcast.mapreduce.Mapper;
 
 @SuppressWarnings("deprecation")
-public class ComplaintMapper implements Mapper<Long, RequestRow, Complaint, Long> {
+public class ComplaintMapper implements Mapper<Long, Complaint, Complaint, Long> {
     private static final Long ONE = 1L;
 
     @Override
-    public void map(Long key, RequestRow row, Context<Complaint, Long> context) {
-        context.emit(new Complaint(row.getComplaintType(), row.getAgency()), ONE);
+    public void map(Long key, Complaint row, Context<Complaint, Long> context) {
+        context.emit(row, ONE);
     }
 }
