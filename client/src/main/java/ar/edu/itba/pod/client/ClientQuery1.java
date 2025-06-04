@@ -1,9 +1,6 @@
 package ar.edu.itba.pod.client;
 
 import ar.edu.itba.pod.common.Complaint;
-import ar.edu.itba.pod.common.RequestRow;
-import ar.edu.itba.pod.common.RequestsCHIRow;
-import ar.edu.itba.pod.common.RequestsNYCRow;
 import ar.edu.itba.pod.v1.query1.ComplaintCollator;
 import ar.edu.itba.pod.v1.query1.ComplaintMapper;
 import ar.edu.itba.pod.v1.query1.ComplaintReducerFactory;
@@ -19,17 +16,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Stream;
 
 public class ClientQuery1 extends Base {
 
