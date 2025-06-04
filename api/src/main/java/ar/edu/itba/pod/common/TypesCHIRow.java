@@ -6,6 +6,7 @@ import com.hazelcast.nio.serialization.DataSerializable;
 
 import java.io.IOException;
 
+@Deprecated
 public class TypesCHIRow implements DataSerializable {
     private String srShortCode;
     private String srType;

@@ -6,6 +6,7 @@ import com.hazelcast.nio.serialization.DataSerializable;
 
 import java.io.IOException;
 
+@Deprecated
 public class TypesNYCRow implements DataSerializable {
     private String complaintType;
 

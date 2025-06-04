@@ -7,6 +7,7 @@ import com.hazelcast.nio.serialization.DataSerializable;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
+@Deprecated
 public class RequestsCHIRow extends RequestRow implements DataSerializable {
     private String srNumber;
     private Address address;

@@ -2,6 +2,7 @@ package ar.edu.itba.pod.common;
 
 import java.time.LocalDateTime;
 
+@Deprecated
 public abstract class RequestRow {
     private LocalDateTime createdDate;
     private String status;
