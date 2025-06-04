@@ -14,4 +14,4 @@ fi
 JAVA_CLASSPATH="./client/target/classes"
 MAIN_CLASS="ar.edu.itba.pod.client.$JAVA_RUN_CLASS"
 
-java $JAVA_OPTS -cp "$SCRIPT_DIR/lib/jars/*:$JAVA_CLASSPATH" $MAIN_CLASS $*
+java $JAVA_OPTS $* -cp "$SCRIPT_DIR/lib/jars/*:$JAVA_CLASSPATH" $MAIN_CLASS
