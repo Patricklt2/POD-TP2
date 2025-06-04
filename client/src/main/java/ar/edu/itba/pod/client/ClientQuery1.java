@@ -4,9 +4,9 @@ import ar.edu.itba.pod.common.Complaint;
 import ar.edu.itba.pod.common.RequestRow;
 import ar.edu.itba.pod.common.RequestsCHIRow;
 import ar.edu.itba.pod.common.RequestsNYCRow;
-import ar.edu.itba.pod.v1.ComplaintCollator;
-import ar.edu.itba.pod.v1.ComplaintMapper;
-import ar.edu.itba.pod.v1.ComplaintReducerFactory;
+import ar.edu.itba.pod.v1.query1.ComplaintCollator;
+import ar.edu.itba.pod.v1.query1.ComplaintMapper;
+import ar.edu.itba.pod.v1.query1.ComplaintReducerFactory;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.ICompletableFuture;
@@ -42,7 +42,7 @@ public class ClientQuery1 extends Base {
     @SuppressWarnings("deprecation")
     public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
         logger.info("ClientQuery1 Starting ...");
-        new ar.edu.itba.pod.client.ClientQuery1().run();
+        new ClientQuery1().run();
 
         try {
             HazelcastInstance hz = getHazelcastInstance();
@@ -135,7 +135,7 @@ public class ClientQuery1 extends Base {
                 writer.newLine();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 }

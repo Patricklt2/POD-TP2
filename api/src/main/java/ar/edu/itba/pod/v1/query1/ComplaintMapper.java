@@ -1,4 +1,4 @@
-package ar.edu.itba.pod.v1;
+package ar.edu.itba.pod.v1.query1;
 
 import ar.edu.itba.pod.common.Complaint;
 import ar.edu.itba.pod.common.RequestRow;
@@ -11,9 +11,6 @@ public class ComplaintMapper implements Mapper<Long, RequestRow, Complaint, Long
 
     @Override
     public void map(Long key, RequestRow row, Context<Complaint, Long> context) {
-        if (row == null)
-            return;
-
         context.emit(new Complaint(row.getComplaintType(), row.getAgency()), ONE);
     }
 }

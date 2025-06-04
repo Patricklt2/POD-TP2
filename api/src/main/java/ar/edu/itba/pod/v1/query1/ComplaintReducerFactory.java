@@ -1,4 +1,4 @@
-package ar.edu.itba.pod.v1;
+package ar.edu.itba.pod.v1.query1;
 
 import ar.edu.itba.pod.common.Complaint;
 import com.hazelcast.mapreduce.Reducer;
@@ -11,7 +11,7 @@ public class ComplaintReducerFactory implements ReducerFactory<Complaint, Long, 
         return new ComplaintReducer();
     }
 
-    private class ComplaintReducer extends Reducer<Long, Long> {
+    private static class ComplaintReducer extends Reducer<Long, Long> {
         private Long sum = 0L;
 
         @Override
