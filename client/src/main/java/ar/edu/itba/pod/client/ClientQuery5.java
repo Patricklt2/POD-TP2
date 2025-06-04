@@ -19,6 +19,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -64,7 +65,10 @@ public class ClientQuery5 extends Base {
 
     private static void writeOutputToCsvQuery5(List<Map.Entry<Resolutions, Long>> result) {
         try (BufferedWriter writer = Files
-                .newBufferedWriter(Paths.get(env.getProperty("outPath"), "query5Output.csv"))) {
+                .newBufferedWriter(Paths.get(env.getProperty("outPath"), "query5Output.csv"),
+                StandardOpenOption.CREATE,
+                StandardOpenOption.TRUNCATE_EXISTING,
+                StandardOpenOption.WRITE)) {
             writer.write("agency;year;month;resolvedYTD");
             writer.newLine();
 

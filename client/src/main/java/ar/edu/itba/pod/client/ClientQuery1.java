@@ -18,6 +18,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -61,7 +62,10 @@ public class ClientQuery1 extends Base {
 
     private static void writeOutputToCsvQuery1(List<Map.Entry<Complaint, Long>> result) {
         try (BufferedWriter writer = Files
-                .newBufferedWriter(Paths.get(env.getProperty("outPath"), "query1Output.csv"))) {
+                .newBufferedWriter(Paths.get(env.getProperty("outPath"), "query1Output.csv"),
+                        StandardOpenOption.CREATE,
+                        StandardOpenOption.TRUNCATE_EXISTING,
+                        StandardOpenOption.WRITE)) {
             writer.write("type;agency;requests");
             writer.newLine();
 
