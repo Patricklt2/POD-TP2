@@ -105,6 +105,7 @@ public abstract class Base {
         };
     }
 
+    //The double holy mother of optimization
     protected static <T> void parseCsv(IMap<Long, T> entries, Function<String[], T> nycLambda,
                                        BiFunction<String[], Map<String, String>, T> chiLambda) throws IOException {
         final Logger logger = LoggerFactory.getLogger(Base.class);
