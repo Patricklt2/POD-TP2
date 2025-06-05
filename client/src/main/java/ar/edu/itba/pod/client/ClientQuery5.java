@@ -8,6 +8,7 @@ import ar.edu.itba.pod.v1.query5.ResolutionsReducerFactory;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.ICompletableFuture;
+import com.hazelcast.core.IMap;
 import com.hazelcast.core.MultiMap;
 import com.hazelcast.mapreduce.Job;
 import com.hazelcast.mapreduce.JobTracker;
@@ -39,13 +40,13 @@ public class ClientQuery5 extends Base {
 
         try {
             HazelcastInstance hz = getHazelcastInstance();
-            MultiMap<Long, Resolutions> requestsMultiMap = hz.getMultiMap("requestsYTD");
-            KeyValueSource<Long, Resolutions> requestsKeyValueSource = KeyValueSource.fromMultiMap(requestsMultiMap);
+            IMap<Long, Resolutions> requestsIMap = hz.getMap("requestsYTD");
+            KeyValueSource<Long, Resolutions> requestsKeyValueSource = KeyValueSource.fromMap(requestsIMap);
 
             // Job Tracker
             JobTracker jobTracker = hz.getJobTracker("solvedYTD");
 
-            parseCsv(requestsMultiMap, line -> new Resolutions(line[2], line[5], LocalDateTime.parse(line[1], getDateTimeFormatter())),
+            parseCsv(requestsIMap, line -> new Resolutions(line[2], line[5], LocalDateTime.parse(line[1], getDateTimeFormatter())),
                     (line, ugh) -> new Resolutions(line[2], line[3], LocalDateTime.parse(line[4], getDateTimeFormatter())));
 
             // MapReduce Job
