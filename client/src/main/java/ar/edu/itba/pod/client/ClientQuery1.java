@@ -7,6 +7,7 @@ import ar.edu.itba.pod.v1.query1.ComplaintReducerFactory;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.ICompletableFuture;
+import com.hazelcast.core.IMap;
 import com.hazelcast.core.MultiMap;
 import com.hazelcast.mapreduce.Job;
 import com.hazelcast.mapreduce.JobTracker;
@@ -38,13 +39,13 @@ public class ClientQuery1 extends Base {
 
         try {
             HazelcastInstance hz = getHazelcastInstance();
-            MultiMap<Long, Complaint> requestsMultiMap = hz.getMultiMap("requests");
-            KeyValueSource<Long, Complaint> requestsKeyValueSource = KeyValueSource.fromMultiMap(requestsMultiMap);
+            IMap<Long, Complaint> requestsIMap = hz.getMap("requests");
+            KeyValueSource<Long, Complaint> requestsKeyValueSource = KeyValueSource.fromMap(requestsIMap);
 
             // Job Tracker
             JobTracker jobTracker = hz.getJobTracker("complaints");
 
-            parseCsv(requestsMultiMap, line -> new Complaint(line[3], line[2]),
+            parseCsv(requestsIMap, line -> new Complaint(line[3], line[2]),
                     (line, srCodeToDescription) -> new Complaint(srCodeToDescription.get(line[1]), line[2]));
 
             // MapReduce Job
