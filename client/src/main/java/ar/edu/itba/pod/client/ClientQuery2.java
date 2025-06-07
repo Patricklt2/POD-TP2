@@ -1,17 +1,14 @@
 package ar.edu.itba.pod.client;
 
-import ar.edu.itba.pod.common.Complaint;
+import ar.edu.itba.pod.common.ComplaintQuadrant;
 import ar.edu.itba.pod.common.GeoLocation;
-import ar.edu.itba.pod.v1.query1.ComplaintCollator;
-import ar.edu.itba.pod.v1.query1.ComplaintMapper;
-import ar.edu.itba.pod.v1.query1.ComplaintReducerFactory;
-import ar.edu.itba.pod.v1.query2.GeoLocationCollator;
-import ar.edu.itba.pod.v1.query2.GeoLocationMapper;
-import ar.edu.itba.pod.v1.query2.GeoLocationReducerFactory;
+import ar.edu.itba.pod.v1.query2.ComplaintQuadrantCollator;
+import ar.edu.itba.pod.v1.query2.ComplaintQuadrantMapper;
+import ar.edu.itba.pod.v1.query2.ComplaintQuadrantReducerFactory;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.ICompletableFuture;
-import com.hazelcast.core.MultiMap;
+import com.hazelcast.core.IMap;
 import com.hazelcast.mapreduce.Job;
 import com.hazelcast.mapreduce.JobTracker;
 import com.hazelcast.mapreduce.KeyValueSource;
@@ -47,51 +44,56 @@ public class ClientQuery2 extends Base {
 
         try {
             HazelcastInstance hz = getHazelcastInstance();
-            MultiMap<Long, GeoLocation> requestsMultiMap = hz.getMultiMap("requests");
-            KeyValueSource<Long, GeoLocation> requestsKeyValueSource = KeyValueSource.fromMultiMap(requestsMultiMap);
+            IMap<Long, ComplaintQuadrant> requestsIMap = hz.getMap("requests");
+            KeyValueSource<Long, ComplaintQuadrant> requestsKeyValueSource = KeyValueSource.fromMap(requestsIMap);
 
             // Job Tracker
             JobTracker jobTracker = hz.getJobTracker("complaints");
 
-            parseCsv(requestsMultiMap, line -> new GeoLocation(Double.parseDouble(line[7]), Double.parseDouble(line[8])),
-                    (line, srCodeToDescription) -> new GeoLocation(Double.parseDouble(srCodeToDescription.get(line[10])), Double.parseDouble(line[11])));
+
+            parseCsv(requestsIMap, line -> new ComplaintQuadrant(line[3], line[6], Double.parseDouble(line[7]), Double.parseDouble(line[8])),
+                    (line, srCodeToDescription) -> new ComplaintQuadrant(srCodeToDescription.get(line[1]), line[9], Double.parseDouble(line[10]), Double.parseDouble(line[11])));
+
 
             // MapReduce Job
-            Job<Long, GeoLocation> job = jobTracker.newJob(requestsKeyValueSource);
-            ICompletableFuture<List<Map.Entry<GeoLocation, Long>>> future = job
-                    .mapper(new GeoLocationMapper())
-                    .reducer(new GeoLocationReducerFactory())
-                    .submit(new GeoLocationCollator());
+            Job<Long, ComplaintQuadrant> job = jobTracker.newJob(requestsKeyValueSource);
+            ICompletableFuture<List<Map.Entry<ComplaintQuadrant, Long>>> future = job
+                    .mapper(new ComplaintQuadrantMapper())
+                    .reducer(new ComplaintQuadrantReducerFactory())
+                    .submit(new ComplaintQuadrantCollator());
 
-            writeOutputToCsvQuery2(future.get());
+            writeOutputToCsvQuery2(future.get(), getQ());
         } finally {
             HazelcastClient.shutdownAll();
         }
     }
 
-    private static void writeOutputToCsvQuery2(List<Map.Entry<GeoLocation, Long>> result) {
+    private static void writeOutputToCsvQuery2(List<Map.Entry<ComplaintQuadrant, Long>> result, Double q) {
         try (BufferedWriter writer = Files
-                .newBufferedWriter(Paths.get(env.getProperty("outPath"), "query1Output.csv"),
+                .newBufferedWriter(Paths.get(env.getProperty("outPath"), "query2Output.csv"),
                         StandardOpenOption.CREATE,
                         StandardOpenOption.TRUNCATE_EXISTING,
                         StandardOpenOption.WRITE)) {
-            writer.write("type;agency;requests");
+            writer.write("neighbourhood;quadLat;quadLon;topType");
             writer.newLine();
 
-            for (Map.Entry<GeoLocation, Long> entry : result) {
-                /*GeoLocation complaint = entry.getKey();
-                Long requests = entry.getValue();
+            for (Map.Entry<ComplaintQuadrant, Long> entry : result) {
+                ComplaintQuadrant complaintQuadrant = entry.getKey();
 
-                String line = String.format("%s;%s;%d",
-                        complaint.getType(),
-                        complaint.getAgency(),
-                        requests);
+                String line = String.format("%s;%d;%d;%s",
+                        complaintQuadrant.getNeighborhood(),
+                        Math.round(complaintQuadrant.getLocation().getLatitude() / q),
+                        Math.round(complaintQuadrant.getLocation().getLongitude() / q),
+                        complaintQuadrant.getType());
                 writer.write(line);
                 writer.newLine();
-                 */
             }
         } catch (IOException e) {
             logger.error("Error while writing output for query2",e);
         }
+    }
+
+    protected static Double getQ() {
+        return Double.parseDouble(env.getProperty("q"));
     }
 }

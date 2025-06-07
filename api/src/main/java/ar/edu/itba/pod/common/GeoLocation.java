@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 //Might not need to be serializable, will keep it like that for now
-public class GeoLocation implements DataSerializable {
+public class GeoLocation implements DataSerializable, Comparable<GeoLocation> {
     private double latitude;
     private double longitude;
 
@@ -37,6 +37,13 @@ public class GeoLocation implements DataSerializable {
 
     public double getLongitude() {
         return longitude;
+    }
+
+    @Override
+    public int compareTo(GeoLocation o) {
+        int cmp = Double.compare(this.latitude, o.latitude);
+        if (cmp != 0) return cmp;
+        return Double.compare(this.longitude, o.longitude);
     }
 
     @Override
