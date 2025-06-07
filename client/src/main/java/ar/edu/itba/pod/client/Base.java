@@ -64,7 +64,7 @@ public abstract class Base {
         hazelcastInstance = HazelcastClient.newHazelcastClient(clientConfig);
     }
 
-    private void requireProperty(String key) {
+    static void requireProperty(String key) {
         String value = env.getProperty(key);
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException(String.format("-D%s is required and cannot be empty", key));
