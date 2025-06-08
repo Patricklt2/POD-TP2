@@ -20,7 +20,7 @@ public class RequestsCHIRow extends RequestRow implements DataSerializable {
         super(createdDate, status, communityArea, new GeoLocation(latitude, longitude), srShortCode, ownerDepartment);
 
         this.srNumber = srNumber;
-        this.address = new Address(streetNumber, streetDirection, streetName, streetType);
+        this.address = new Address(streetDirection, streetName, streetType);
     }
 
     @Override
@@ -30,10 +30,9 @@ public class RequestsCHIRow extends RequestRow implements DataSerializable {
         out.writeUTF(getAgency());
         out.writeUTF(getStatus());
         out.writeObject(getCreatedDate());
-        out.writeInt(address.getStreetNumber());
-        out.writeChar(address.getStreetDirection());
-        out.writeUTF(address.getStreetName());
-        out.writeUTF(address.getStreetType());
+        out.writeChar(address.getDirection());
+        out.writeUTF(address.getName());
+        out.writeUTF(address.getType());
         out.writeUTF(getNeighbourhood());
         out.writeDouble(getGeoLocation().getLatitude());
         out.writeDouble(getGeoLocation().getLongitude());
@@ -47,11 +46,10 @@ public class RequestsCHIRow extends RequestRow implements DataSerializable {
         setStatus(in.readUTF());
         setCreatedDate(in.readObject());
 
-        int streetNumber = in.readInt();
         char streetDirection = in.readChar();
         String streetName = in.readUTF();
         String streetType = in.readUTF();
-        address = new Address(streetNumber, streetDirection, streetName, streetType);
+        address = new Address(streetDirection, streetName, streetType);
 
         setNeighbourhood(in.readUTF());
 
