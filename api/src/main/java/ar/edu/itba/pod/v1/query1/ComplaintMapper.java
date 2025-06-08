@@ -1,7 +1,6 @@
 package ar.edu.itba.pod.v1.query1;
 
 import ar.edu.itba.pod.common.Complaint;
-import ar.edu.itba.pod.common.RequestRow;
 import com.hazelcast.mapreduce.Context;
 import com.hazelcast.mapreduce.Mapper;
 

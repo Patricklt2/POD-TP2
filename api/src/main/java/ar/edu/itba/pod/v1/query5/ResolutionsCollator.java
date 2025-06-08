@@ -1,7 +1,5 @@
 package ar.edu.itba.pod.v1.query5;
 
-import ar.edu.itba.pod.common.Complaint;
-
 import ar.edu.itba.pod.common.Resolutions;
 import com.hazelcast.mapreduce.Collator;
 import java.util.Comparator;
