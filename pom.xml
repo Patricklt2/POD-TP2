@@ -102,8 +102,7 @@
         <version>3.11.0</version>
         <configuration>
           <verbose>false</verbose>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
+          <release>${java.version}</release>
           <encoding>utf-8</encoding>
         </configuration>
       </plugin>
