@@ -86,11 +86,13 @@ public abstract class Base {
     }
 
     protected static Path getRequestsFilePath(String city) {
-        String inPath = env.getProperty("inPath");
+        final String inPath = env.getProperty("inPath");
+
+        final String type = env.getProperty("ev") != null ? "-Short" : "";
 
         return switch (city.toUpperCase()) {
-            case "NYC" -> Paths.get(inPath, "serviceRequestsNYC-Short.csv");
-            case "CHI" -> Paths.get(inPath, "serviceRequestsCHI-Short.csv");
+            case "NYC" -> Paths.get(inPath, "serviceRequestsNYC" + type + ".csv");
+            case "CHI" -> Paths.get(inPath, "serviceRequestsCHI" + type + ".csv");
             default -> throw new IllegalArgumentException("Invalid city: must be NYC or CHI");
         };
     }
