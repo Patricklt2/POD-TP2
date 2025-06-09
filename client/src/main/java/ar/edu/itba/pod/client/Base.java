@@ -218,7 +218,7 @@ public abstract class Base {
 
         @Override
         public void run() {
-            final Map<K, V> out = new HashMap<>();
+            final Map<K, V> out = new HashMap<>(lines.size() + 1, 1.0f);
 
             final Boolean nyc = env.getProperty("city").equalsIgnoreCase("NYC");
             final BiFunction<Long, String[], K> key = nyc ? nycKey : chiKey;
