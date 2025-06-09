@@ -49,10 +49,12 @@ public class ClientQuery2 extends Base {
             // Job Tracker
             JobTracker jobTracker = hz.getJobTracker("complaints");
 
-
-            parseCsv(requestsIMap, line -> new ComplaintQuadrant(line[3], line[6], Double.parseDouble(line[7]), Double.parseDouble(line[8])),
-                    (line, srCodeToDescription) -> new ComplaintQuadrant(srCodeToDescription.get(line[1]), line[9], Double.parseDouble(line[10]), Double.parseDouble(line[11])));
-
+            final Double q = getQ();
+            parseCsv(requestsIMap,
+                    line -> new ComplaintQuadrant(line[3], line[6], Double.parseDouble(line[7]) / q,
+                            Double.parseDouble(line[8]) / q),
+                    (line, sr) -> new ComplaintQuadrant(sr.get(line[1]), line[9], Double.parseDouble(line[10]) / q,
+                            Double.parseDouble(line[11]) / q));
 
             // MapReduce Job
             Job<Long, ComplaintQuadrant> job = jobTracker.newJob(requestsKeyValueSource);
@@ -61,13 +63,13 @@ public class ClientQuery2 extends Base {
                     .reducer(new ComplaintQuadrantReducerFactory())
                     .submit(new ComplaintQuadrantCollator());
 
-            writeOutputToCsvQuery2(future.get(), getQ());
+            writeOutputToCsvQuery2(future.get());
         } finally {
             HazelcastClient.shutdownAll();
         }
     }
 
-    private static void writeOutputToCsvQuery2(List<Map.Entry<ComplaintQuadrant, Long>> result, Double q) {
+    private static void writeOutputToCsvQuery2(List<Map.Entry<ComplaintQuadrant, Long>> result) {
         try (BufferedWriter writer = Files
                 .newBufferedWriter(Paths.get(env.getProperty("outPath"), "query2Output.csv"),
                         StandardOpenOption.CREATE,
@@ -81,8 +83,8 @@ public class ClientQuery2 extends Base {
 
                 String line = String.format("%s;%d;%d;%s",
                         complaintQuadrant.getNeighborhood(),
-                        Math.round(complaintQuadrant.getLocation().getLatitude() / q),
-                        Math.round(complaintQuadrant.getLocation().getLongitude() / q),
+                        Math.round(complaintQuadrant.getLocation().getLatitude()),
+                        Math.round(complaintQuadrant.getLocation().getLongitude()),
                         complaintQuadrant.getType());
                 writer.write(line);
                 writer.newLine();
