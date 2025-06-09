@@ -4,6 +4,7 @@ import ar.edu.itba.pod.common.Resolutions;
 import com.hazelcast.mapreduce.Reducer;
 import com.hazelcast.mapreduce.ReducerFactory;
 
+@SuppressWarnings("deprecation")
 public class MovingAverageReducerFactory implements ReducerFactory<Resolutions, Long, Long> {
     @Override
     public Reducer<Long, Long> newReducer(Resolutions key) {

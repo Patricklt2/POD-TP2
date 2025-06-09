@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+@SuppressWarnings("deprecation")
 public class MovingAverageCollator implements Collator<Map.Entry<Resolutions, Long>, List<String>> {
     @Override
     public List<String> collate(Iterable<Map.Entry<Resolutions, Long>> values) {
@@ -31,18 +32,15 @@ public class MovingAverageCollator implements Collator<Map.Entry<Resolutions, Lo
                 long[] monthly = yearEntry.getValue();
 
                 long rollingSum = 0;
-                int count = 0;
 
                 for (int i = 0; i < 12; i++) {
                     if (monthly[i] != 0 || i < w) {
                         rollingSum += monthly[i];
-                        count++;
                     }
 
                     if (i + 1 >= w) {
                         if (i + 1 > w) {
                             rollingSum -= monthly[i - w];
-                            count--;
                         }
                         double avg = rollingSum / (double) w;
                         result.add(String.format("%s;%d;%d;%.2f", agency, year, i + 1, Math.floor(avg * 100) / 100));

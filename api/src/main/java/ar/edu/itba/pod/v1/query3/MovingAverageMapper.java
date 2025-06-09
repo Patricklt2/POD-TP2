@@ -4,6 +4,7 @@ import ar.edu.itba.pod.common.Resolutions;
 import com.hazelcast.mapreduce.Context;
 import com.hazelcast.mapreduce.Mapper;
 
+@SuppressWarnings("deprecation")
 public class MovingAverageMapper implements Mapper<Long, Resolutions, Resolutions, Long> {
     private static final Long ONE = 1L;
     private static final Long ZERO = 0L;
