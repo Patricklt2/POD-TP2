@@ -25,10 +25,16 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public abstract class Base {
-    protected static final Properties env = System.getProperties();
-    private static HazelcastInstance hazelcastInstance;
+    // Runtime.getRuntime().availableProcessors()
+    private static final int MAX_THREADS = 8;
+    private static final int BATCH_SIZE = 25_000;
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     private final Logger logger;
+
+    private static HazelcastInstance hazelcastInstance;
+
+    protected static final Properties env = System.getProperties();
 
     public Base(Logger logger) {
         this.logger = logger;
@@ -124,8 +130,7 @@ public abstract class Base {
         final Map<String, String> srCodeToDescription = new HashMap<>();
         final String city = env.getProperty("city");
 
-        // Runtime.getRuntime().availableProcessors()
-        final ExecutorService executor = Executors.newFixedThreadPool(8);
+        final ExecutorService executor = Executors.newFixedThreadPool(MAX_THREADS);
 
         logger.info("Starting csv parse más descriptivo");
 
@@ -138,14 +143,14 @@ public abstract class Base {
         }
 
         try (Stream<String> lines = Files.lines(getRequestsFilePath(city), StandardCharsets.UTF_8)) {
-            final List<String> batch = new ArrayList<>(500);
+            final List<String> batch = new ArrayList<>(BATCH_SIZE);
             final Iterator<String> iterator = lines.iterator();
 
             iterator.next(); // Skip header
             while (iterator.hasNext()) {
                 batch.add(iterator.next());
 
-                if (batch.size() == 500) {
+                if (batch.size() == BATCH_SIZE) {
                     executor.submit(new Reader<>(
                             entries,
                             new ArrayList<>(batch),
