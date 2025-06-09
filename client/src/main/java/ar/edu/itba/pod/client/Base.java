@@ -130,8 +130,8 @@ public abstract class Base {
         logger.info("Starting csv parse más descriptivo");
 
         if (city.equalsIgnoreCase("CHI")) {
-            try (Stream<String> serviceLines = Files.lines(getTypesFilePath(city), StandardCharsets.UTF_8)) {
-                    serviceLines.skip(1)
+            try (Stream<String> serviceLines = Files.lines(getTypesFilePath(city), StandardCharsets.UTF_8).skip(1)) {
+                    serviceLines
                             .map(line -> line.split(";"))
                             .forEach(parts -> srCodeToDescription.put(parts[0], parts[1]));
             }
