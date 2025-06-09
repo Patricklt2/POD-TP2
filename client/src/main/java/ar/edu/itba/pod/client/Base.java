@@ -142,6 +142,7 @@ public abstract class Base {
             }
         }
 
+        logger.debug("Loading file: {}", getRequestsFilePath(city));
         try (Stream<String> lines = Files.lines(getRequestsFilePath(city), StandardCharsets.UTF_8)) {
             final List<String> batch = new ArrayList<>(BATCH_SIZE);
             final Iterator<String> iterator = lines.iterator();
