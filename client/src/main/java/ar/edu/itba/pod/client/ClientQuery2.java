@@ -1,7 +1,6 @@
 package ar.edu.itba.pod.client;
 
 import ar.edu.itba.pod.common.ComplaintQuadrant;
-import ar.edu.itba.pod.common.GeoLocation;
 import ar.edu.itba.pod.v1.query2.ComplaintQuadrantCollator;
 import ar.edu.itba.pod.v1.query2.ComplaintQuadrantMapper;
 import ar.edu.itba.pod.v1.query2.ComplaintQuadrantReducerFactory;
@@ -89,7 +88,7 @@ public class ClientQuery2 extends Base {
                 writer.newLine();
             }
         } catch (IOException e) {
-            logger.error("Error while writing output for query2",e);
+            logger.error("Error while writing output for query2", e);
         }
     }
 
