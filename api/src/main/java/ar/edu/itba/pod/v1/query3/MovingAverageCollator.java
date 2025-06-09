@@ -46,7 +46,7 @@ public class MovingAverageCollator implements Collator<Map.Entry<Resolutions, Lo
                         }
                         double avg = rollingSum / (double) w;
                         result.add(String.format("%s;%d;%d;%.2f", agency, year, i + 1, Math.floor(avg * 100) / 100));
-                    } else if (i + 1 > 0 && rollingSum > 0) {
+                    } else if (rollingSum > 0) {
                         double avg = rollingSum / (double) (i + 1);
                         result.add(String.format("%s;%d;%d;%.2f", agency, year, i + 1, Math.floor(avg * 100) / 100));
                     }
