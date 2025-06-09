@@ -3,16 +3,14 @@ package ar.edu.itba.pod.v1.query3;
 import ar.edu.itba.pod.common.Resolutions;
 import com.hazelcast.mapreduce.Collator;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 @SuppressWarnings("deprecation")
 public class MovingAverageCollator implements Collator<Map.Entry<Resolutions, Long>, List<String>> {
     @Override
     public List<String> collate(Iterable<Map.Entry<Resolutions, Long>> values) {
-        int w = Integer.parseInt(System.getProperty("w"));
+        int w = Integer.parseInt(System.getProperty("w")); // tamaño de la ventana móvil
+
         Map<String, TreeMap<Integer, long[]>> grouped = new TreeMap<>();
 
         for (Map.Entry<Resolutions, Long> entry : values) {
@@ -34,9 +32,7 @@ public class MovingAverageCollator implements Collator<Map.Entry<Resolutions, Lo
                 long rollingSum = 0;
 
                 for (int i = 0; i < 12; i++) {
-                    if (monthly[i] != 0 || i < w) {
-                        rollingSum += monthly[i];
-                    }
+                    rollingSum += monthly[i];
 
                     if (i + 1 >= w) {
                         if (i + 1 > w) {
@@ -44,7 +40,7 @@ public class MovingAverageCollator implements Collator<Map.Entry<Resolutions, Lo
                         }
                         double avg = rollingSum / (double) w;
                         result.add(String.format("%s;%d;%d;%.2f", agency, year, i + 1, Math.floor(avg * 100) / 100));
-                    } else if (rollingSum > 0) {
+                    } else {
                         double avg = rollingSum / (double) (i + 1);
                         result.add(String.format("%s;%d;%d;%.2f", agency, year, i + 1, Math.floor(avg * 100) / 100));
                     }
@@ -55,5 +51,6 @@ public class MovingAverageCollator implements Collator<Map.Entry<Resolutions, Lo
         return result;
     }
 }
+
 
 
