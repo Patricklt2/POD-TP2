@@ -9,15 +9,18 @@ import java.util.*;
 public class MovingAverageCollator implements Collator<Map.Entry<Resolutions, Long>, List<String>> {
     @Override
     public List<String> collate(Iterable<Map.Entry<Resolutions, Long>> values) {
-        int w = Integer.parseInt(System.getProperty("w")); // tamaño de la ventana móvil
+        int w = Integer.parseInt(System.getProperty("w")); // Tamaño de la ventana móvil
 
         Map<String, TreeMap<Integer, long[]>> grouped = new TreeMap<>();
 
         for (Map.Entry<Resolutions, Long> entry : values) {
             Resolutions r = entry.getKey();
-            grouped
-                    .computeIfAbsent(r.getAgency(), k -> new TreeMap<>())
-                    .computeIfAbsent(r.getYear(), k -> new long[12])[r.getMonth() - 1] = entry.getValue();
+
+            TreeMap<Integer, long[]> yearsMap = grouped
+                    .computeIfAbsent(r.getAgency(), k -> new TreeMap<>());
+
+            long[] months = yearsMap.computeIfAbsent(r.getYear(), k -> new long[12]);
+            months[r.getMonth() - 1] = entry.getValue();
         }
 
         List<String> result = new ArrayList<>();
@@ -51,6 +54,7 @@ public class MovingAverageCollator implements Collator<Map.Entry<Resolutions, Lo
         return result;
     }
 }
+
 
 
 

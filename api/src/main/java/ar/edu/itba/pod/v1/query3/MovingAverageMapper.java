@@ -7,7 +7,6 @@ import com.hazelcast.mapreduce.Mapper;
 @SuppressWarnings("deprecation")
 public class MovingAverageMapper implements Mapper<Long, Resolutions, Resolutions, Long> {
     private static final Long ONE = 1L;
-    private static final Long ZERO = 0L;
 
     private final String city;
 
@@ -20,7 +19,9 @@ public class MovingAverageMapper implements Mapper<Long, Resolutions, Resolution
         boolean isOpen = city.equals("NYC")
                 ? !row.getStatus().equals("Closed")
                 : row.getStatus().equals("Open");
-        context.emit(row, isOpen ? ONE : ZERO);
+        if(isOpen) {
+            context.emit(row, ONE);
+        }
     }
 }
 
