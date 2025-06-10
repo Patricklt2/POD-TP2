@@ -9,7 +9,7 @@ import java.util.*;
 public class MovingAverageCollator implements Collator<Map.Entry<Resolutions, Long>, List<String>> {
     @Override
     public List<String> collate(Iterable<Map.Entry<Resolutions, Long>> values) {
-        int w = Integer.parseInt(System.getProperty("w")); // Tamaño de la ventana móvil
+        int w = Integer.parseInt(System.getProperty("w"));
 
         Map<String, TreeMap<Integer, long[]>> grouped = new TreeMap<>();
 
