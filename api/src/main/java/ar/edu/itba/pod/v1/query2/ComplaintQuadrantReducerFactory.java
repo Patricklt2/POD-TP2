@@ -2,6 +2,7 @@ package ar.edu.itba.pod.v1.query2;
 
 import ar.edu.itba.pod.common.NeighborhoodQuadrant;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -19,23 +20,35 @@ public class ComplaintQuadrantReducerFactory implements ReducerFactory<Neighborh
     private static class ComplaintQuadrantReducer extends Reducer<String, String> {
         final private Map<String, AtomicLong> counts = new ConcurrentHashMap<>();
 
-        private ReduceEntry max = null;
-
         @Override
-        public synchronized void reduce(String value) {
-            final long count = counts.computeIfAbsent(value, k -> new AtomicLong(0)).incrementAndGet();
-
-            if (max == null || count > max.count) {
-                max = new ReduceEntry(value, count);
-            }
+        public void reduce(String value) {
+            counts.computeIfAbsent(value, k -> new AtomicLong(0)).incrementAndGet();
         }
 
         @Override
         public String finalizeReduce() {
-            return max.type;
-        }
+            final Iterator<Map.Entry<String, AtomicLong>> it = counts.entrySet().iterator();
 
-        private static record ReduceEntry(String type, long count) {
+            if (!it.hasNext()) {
+                return null;
+            }
+
+            final Map.Entry<String, AtomicLong> first = it.next();
+
+            String maxType = first.getKey();
+            long maxCount = first.getValue().get();
+            
+            while (it.hasNext()) {
+                final Map.Entry<String, AtomicLong> entry = it.next();
+                final long count = entry.getValue().get();
+
+                if (count > maxCount) {
+                    maxCount = count;
+                    maxType = entry.getKey();
+                }
+            }
+
+            return maxType;
         }
     }
 }
