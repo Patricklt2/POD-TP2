@@ -16,7 +16,7 @@ public class RequestsCHIRow extends RequestRow implements DataSerializable {
 
     public RequestsCHIRow(String srNumber, String srShortCode, String ownerDepartment, String status,
                           LocalDateTime createdDate, int streetNumber, char streetDirection, String streetName,
-                          String streetType, String communityArea, double latitude, double longitude) {
+                          String streetType, String communityArea, long latitude, long longitude) {
         super(createdDate, status, communityArea, new GeoLocation(latitude, longitude), srShortCode, ownerDepartment);
 
         this.srNumber = srNumber;
@@ -34,8 +34,8 @@ public class RequestsCHIRow extends RequestRow implements DataSerializable {
         out.writeUTF(address.getName());
         out.writeUTF(address.getType());
         out.writeUTF(getNeighbourhood());
-        out.writeDouble(getGeoLocation().getLatitude());
-        out.writeDouble(getGeoLocation().getLongitude());
+        out.writeLong(getGeoLocation().getLatitude());
+        out.writeLong(getGeoLocation().getLongitude());
     }
 
     @Override
@@ -53,8 +53,8 @@ public class RequestsCHIRow extends RequestRow implements DataSerializable {
 
         setNeighbourhood(in.readUTF());
 
-        double latitude = in.readDouble();
-        double longitude = in.readDouble();
+        long latitude = in.readLong();
+        long longitude = in.readLong();
         setGeoLocation(new GeoLocation(latitude, longitude));
     }
 

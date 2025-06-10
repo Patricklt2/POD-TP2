@@ -52,10 +52,12 @@ public class ClientQuery2 extends Base {
 
             final Double q = getQ();
             parseCsv(requestsIMap,
-                    line -> new ComplaintQuadrant(line[3], line[6], Double.parseDouble(line[7]) / q,
-                            Double.parseDouble(line[8]) / q),
-                    (line, sr) -> new ComplaintQuadrant(sr.get(line[1]), line[9], Double.parseDouble(line[10]) / q,
-                            Double.parseDouble(line[11]) / q));
+                    line -> new ComplaintQuadrant(line[3], line[6],
+                            (long) (Double.parseDouble(line[7]) / q),
+                            (long) (Double.parseDouble(line[8]) / q)),
+                    (line, sr) -> new ComplaintQuadrant(sr.get(line[1]), line[9],
+                            (long) (Double.parseDouble(line[10]) / q),
+                            (long) (Double.parseDouble(line[11]) / q)));
 
             // MapReduce Job
             Job<Long, ComplaintQuadrant> job = jobTracker.newJob(requestsKeyValueSource);

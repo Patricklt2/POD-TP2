@@ -29,14 +29,14 @@ public class NeighborhoodQuadrant implements DataSerializable {
     @Override
     public void writeData(ObjectDataOutput out) throws IOException {
         out.writeUTF(neighborhood);
-        out.writeDouble(location.getLatitude());
-        out.writeDouble(location.getLongitude());
+        out.writeLong(location.getLatitude());
+        out.writeLong(location.getLongitude());
     }
 
     @Override
     public void readData(ObjectDataInput in) throws IOException {
         neighborhood = in.readUTF();
-        location = new GeoLocation(in.readDouble(), in.readDouble());
+        location = new GeoLocation(in.readLong(), in.readLong());
     }
 
     @Override

@@ -15,7 +15,7 @@ public class RequestsNYCRow extends RequestRow implements DataSerializable {
     public RequestsNYCRow() {}
 
     public RequestsNYCRow(int uniqueKey, LocalDateTime createdDate, String agencyName, String complaintType,
-                          String incidentAddress, String status, String borough, double latitude, double longitude) {
+                          String incidentAddress, String status, String borough, long latitude, long longitude) {
         super(createdDate, status, borough, new GeoLocation(latitude, longitude), complaintType, agencyName);
 
         this.uniqueKey = uniqueKey;
@@ -31,8 +31,8 @@ public class RequestsNYCRow extends RequestRow implements DataSerializable {
             out.writeUTF(incidentAddress);
             out.writeUTF(getStatus());
             out.writeUTF(getNeighbourhood());
-            out.writeDouble(getGeoLocation().getLatitude());
-            out.writeDouble(getGeoLocation().getLongitude());
+            out.writeLong(getGeoLocation().getLatitude());
+            out.writeLong(getGeoLocation().getLongitude());
     }
 
     @Override
@@ -45,8 +45,8 @@ public class RequestsNYCRow extends RequestRow implements DataSerializable {
             setStatus(in.readUTF());
             setNeighbourhood(in.readUTF());
 
-            double latitude = in.readDouble();
-            double longitude = in.readDouble();
+            long latitude = in.readLong();
+            long longitude = in.readLong();
 
             setGeoLocation(new GeoLocation(latitude, longitude));
     }

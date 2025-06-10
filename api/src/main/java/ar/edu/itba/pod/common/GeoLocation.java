@@ -7,43 +7,42 @@ import com.hazelcast.nio.serialization.DataSerializable;
 import java.io.IOException;
 import java.util.Objects;
 
-//Might not need to be serializable, will keep it like that for now
 public class GeoLocation implements DataSerializable, Comparable<GeoLocation> {
-    private double latitude;
-    private double longitude;
+    private long latitude;
+    private long longitude;
 
     public GeoLocation() {}
 
-    public GeoLocation(double latitude, double longitude) {
+    public GeoLocation(long latitude, long longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
     @Override
     public void writeData(ObjectDataOutput out) throws IOException {
-        out.writeDouble(latitude);
-        out.writeDouble(longitude);
+        out.writeLong(latitude);
+        out.writeLong(longitude);
     }
 
     @Override
     public void readData(ObjectDataInput in) throws IOException {
-        latitude = in.readDouble();
-        longitude = in.readDouble();
+        latitude = in.readLong();
+        longitude = in.readLong();
     }
 
-    public double getLatitude() {
+    public long getLatitude() {
         return latitude;
     }
 
-    public double getLongitude() {
+    public long getLongitude() {
         return longitude;
     }
 
     @Override
     public int compareTo(GeoLocation o) {
-        int cmp = Double.compare(this.latitude, o.latitude);
+        int cmp = Long.compare(this.latitude, o.latitude);
         if (cmp != 0) return cmp;
-        return Double.compare(this.longitude, o.longitude);
+        return Long.compare(this.longitude, o.longitude);
     }
 
     @Override
@@ -54,7 +53,7 @@ public class GeoLocation implements DataSerializable, Comparable<GeoLocation> {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof GeoLocation that &&
-                Double.compare(this.latitude, that.latitude) == 0 &&
-                Double.compare(this.longitude, that.longitude) == 0;
+                this.latitude == that.latitude &&
+                this.longitude == that.longitude;
     }
 }
