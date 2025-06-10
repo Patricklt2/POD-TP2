@@ -1,27 +1,41 @@
 package ar.edu.itba.pod.v1.query2;
 
-import ar.edu.itba.pod.common.ComplaintQuadrant;
+import ar.edu.itba.pod.common.NeighborhoodQuadrant;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+
 import com.hazelcast.mapreduce.Reducer;
 import com.hazelcast.mapreduce.ReducerFactory;
 
 @SuppressWarnings("deprecation")
-public class ComplaintQuadrantReducerFactory implements ReducerFactory<ComplaintQuadrant, Long, Long> {
+public class ComplaintQuadrantReducerFactory implements ReducerFactory<NeighborhoodQuadrant, String, String> {
     @Override
-    public Reducer<Long, Long> newReducer(ComplaintQuadrant key) {
+    public Reducer<String, String> newReducer(NeighborhoodQuadrant key) {
         return new ComplaintQuadrantReducer();
     }
 
-    private static class ComplaintQuadrantReducer extends Reducer<Long, Long> {
-        private Long sum = 0L;
+    private static class ComplaintQuadrantReducer extends Reducer<String, String> {
+        final private Map<String, AtomicLong> counts = new ConcurrentHashMap<>();
+
+        private ReduceEntry max = null;
 
         @Override
-        public void reduce(Long value) {
-            sum += value;
+        public synchronized void reduce(String value) {
+            final long count = counts.computeIfAbsent(value, k -> new AtomicLong(0)).incrementAndGet();
+
+            if (max == null || count > max.count) {
+                max = new ReduceEntry(value, count);
+            }
         }
 
         @Override
-        public Long finalizeReduce() {
-            return sum;
+        public String finalizeReduce() {
+            return max.type;
+        }
+
+        private static record ReduceEntry(String type, long count) {
         }
     }
 }

@@ -1,6 +1,7 @@
 package ar.edu.itba.pod.client;
 
 import ar.edu.itba.pod.common.ComplaintQuadrant;
+import ar.edu.itba.pod.common.NeighborhoodQuadrant;
 import ar.edu.itba.pod.v1.query2.ComplaintQuadrantCollator;
 import ar.edu.itba.pod.v1.query2.ComplaintQuadrantMapper;
 import ar.edu.itba.pod.v1.query2.ComplaintQuadrantReducerFactory;
@@ -58,7 +59,7 @@ public class ClientQuery2 extends Base {
 
             // MapReduce Job
             Job<Long, ComplaintQuadrant> job = jobTracker.newJob(requestsKeyValueSource);
-            ICompletableFuture<List<Map.Entry<ComplaintQuadrant, Long>>> future = job
+            ICompletableFuture<List<Map.Entry<NeighborhoodQuadrant, String>>> future = job
                     .mapper(new ComplaintQuadrantMapper())
                     .reducer(new ComplaintQuadrantReducerFactory())
                     .submit(new ComplaintQuadrantCollator());
@@ -69,7 +70,7 @@ public class ClientQuery2 extends Base {
         }
     }
 
-    private static void writeOutputToCsvQuery2(List<Map.Entry<ComplaintQuadrant, Long>> result) {
+    private static void writeOutputToCsvQuery2(List<Map.Entry<NeighborhoodQuadrant, String>> result) {
         try (BufferedWriter writer = Files
                 .newBufferedWriter(Paths.get(env.getProperty("outPath"), "query2Output.csv"),
                         StandardOpenOption.CREATE,
@@ -78,14 +79,16 @@ public class ClientQuery2 extends Base {
             writer.write("neighbourhood;quadLat;quadLon;topType");
             writer.newLine();
 
-            for (Map.Entry<ComplaintQuadrant, Long> entry : result) {
-                ComplaintQuadrant complaintQuadrant = entry.getKey();
+            for (Map.Entry<NeighborhoodQuadrant, String> entry : result) {
+                final NeighborhoodQuadrant q = entry.getKey();
+                final String type = entry.getValue();
 
-                String line = String.format("%s;%d;%d;%s",
-                        complaintQuadrant.getNeighborhood(),
-                        Math.round(complaintQuadrant.getLocation().getLatitude()),
-                        Math.round(complaintQuadrant.getLocation().getLongitude()),
-                        complaintQuadrant.getType());
+                final String line = String.format("%s;%d;%d;%s",
+                        q.getNeighborhood(),
+                        Math.round(q.getLocation().getLatitude()),
+                        Math.round(q.getLocation().getLongitude()),
+                        type);
+
                 writer.write(line);
                 writer.newLine();
             }
