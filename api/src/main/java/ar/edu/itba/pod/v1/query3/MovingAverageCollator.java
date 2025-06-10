@@ -7,9 +7,14 @@ import java.util.*;
 
 @SuppressWarnings("deprecation")
 public class MovingAverageCollator implements Collator<Map.Entry<Resolutions, Long>, List<String>> {
+
+    private final int w;
+
+    public MovingAverageCollator(int w) {
+        this.w = w;
+    }
     @Override
     public List<String> collate(Iterable<Map.Entry<Resolutions, Long>> values) {
-        int w = Integer.parseInt(System.getProperty("w"));
 
         Map<String, TreeMap<Integer, long[]>> grouped = new TreeMap<>();
 

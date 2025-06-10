@@ -58,7 +58,7 @@ public class ClientQuery3 extends Base {
             ICompletableFuture<List<String>> future = job
                     .mapper(new MovingAverageMapper(env.getProperty("city")))
                     .reducer(new MovingAverageReducerFactory())
-                    .submit(new MovingAverageCollator());
+                    .submit(new MovingAverageCollator(Integer.parseInt(env.getProperty("w"))));
 
             writeOutputToCsvQuery3(future.get());
         } finally {
