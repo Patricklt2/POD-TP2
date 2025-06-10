@@ -2,10 +2,13 @@ package ar.edu.itba.pod.v1.query2;
 
 import ar.edu.itba.pod.common.NeighborhoodQuadrant;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.hazelcast.mapreduce.Reducer;
 import com.hazelcast.mapreduce.ReducerFactory;
@@ -14,10 +17,10 @@ import com.hazelcast.mapreduce.ReducerFactory;
 public class ComplaintQuadrantReducerFactory implements ReducerFactory<NeighborhoodQuadrant, String, String> {
     @Override
     public Reducer<String, String> newReducer(NeighborhoodQuadrant key) {
-        return new ComplaintQuadrantReducer();
+        return new PostComplaintQuadrantReducer();
     }
 
-    private static class ComplaintQuadrantReducer extends Reducer<String, String> {
+    private static class PostComplaintQuadrantReducer extends Reducer<String, String> {
         final private Map<String, AtomicLong> counts = new ConcurrentHashMap<>();
 
         @Override
@@ -37,7 +40,7 @@ public class ComplaintQuadrantReducerFactory implements ReducerFactory<Neighborh
 
             String maxType = first.getKey();
             long maxCount = first.getValue().get();
-            
+
             while (it.hasNext()) {
                 final Map.Entry<String, AtomicLong> entry = it.next();
                 final long count = entry.getValue().get();
@@ -49,6 +52,35 @@ public class ComplaintQuadrantReducerFactory implements ReducerFactory<Neighborh
             }
 
             return maxType;
+        }
+    }
+
+    @SuppressWarnings("unused")
+    private static class PreComplaintQuadrantReducer extends Reducer<String, String> {
+        final private Map<String, Long> counts = new HashMap<>();
+        final private Lock lock = new ReentrantLock();
+
+        private long max = 0;
+        private String winner = null;
+
+        @Override
+        public void reduce(String value) {
+            lock.lock();
+            try {
+                final long count = counts.merge(value, 1L, Long::sum);
+
+                if (count > max || (count == max && (value.compareTo(winner) < 0))) {
+                    max = count;
+                    winner = value;
+                }
+            } finally {
+                lock.unlock();
+            }
+        }
+
+        @Override
+        public String finalizeReduce() {
+            return winner;
         }
     }
 }
