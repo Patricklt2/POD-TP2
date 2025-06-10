@@ -42,7 +42,7 @@ public class ComplaintQuadrantReducerFactory implements ReducerFactory<Neighborh
                 final Map.Entry<String, AtomicLong> entry = it.next();
                 final long count = entry.getValue().get();
 
-                if (count > maxCount) {
+                if (count > maxCount || (count == maxCount && entry.getKey().compareTo(maxType) < 0)) {
                     maxCount = count;
                     maxType = entry.getKey();
                 }
