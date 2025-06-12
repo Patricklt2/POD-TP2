@@ -39,18 +39,18 @@ public class ClientQuery1 extends Base {
 
         try {
             HazelcastInstance hz = getHazelcastInstance();
-            IMap<Long, Complaint> requestsIMap = hz.getMap("requests");
-            KeyValueSource<Long, Complaint> requestsKeyValueSource = KeyValueSource.fromMap(requestsIMap);
+            IMap<Long, String> requestsIMap = hz.getMap("requests");
+            KeyValueSource<Long, String> requestsKeyValueSource = KeyValueSource.fromMap(requestsIMap);
 
             // Job Tracker
             JobTracker jobTracker = hz.getJobTracker("complaints");
 
-            parseCsv(requestsIMap, line -> new Complaint(line[3], line[2]),
-                    (line, srCodeToDescription) -> new Complaint(srCodeToDescription.get(line[1]), line[2]));
+            parseCsv(requestsIMap, line -> String.format("%s;%s;",line[3], line[2]),
+                    (line, srCodeToDescription) -> String.format("%s;%s;",srCodeToDescription.get(line[1]), line[2]));
 
             // MapReduce Job
-            Job<Long, Complaint> job = jobTracker.newJob(requestsKeyValueSource);
-            ICompletableFuture<List<Map.Entry<Complaint, Long>>> future = job
+            Job<Long, String> job = jobTracker.newJob(requestsKeyValueSource);
+            ICompletableFuture<List<Map.Entry<String, Long>>> future = job
                     .mapper(new ComplaintMapper())
                     .combiner(new ComplaintCombinerFactory())
                     .reducer(new ComplaintReducerFactory())
@@ -62,7 +62,7 @@ public class ClientQuery1 extends Base {
         }
     }
 
-    private static void writeOutputToCsvQuery1(List<Map.Entry<Complaint, Long>> result) {
+    private static void writeOutputToCsvQuery1(List<Map.Entry<String, Long>> result) {
         try (BufferedWriter writer = Files
                 .newBufferedWriter(Paths.get(env.getProperty("outPath"), "query1Output.csv"),
                         StandardOpenOption.CREATE,
@@ -71,14 +71,10 @@ public class ClientQuery1 extends Base {
             writer.write("type;agency;requests");
             writer.newLine();
 
-            for (Map.Entry<Complaint, Long> entry : result) {
-                Complaint complaint = entry.getKey();
+            for (Map.Entry<String, Long> entry : result) {
                 Long requests = entry.getValue();
 
-                String line = String.format("%s;%s;%d",
-                        complaint.getType(),
-                        complaint.getAgency(),
-                        requests);
+                String line = String.format("%s%d",entry.getKey(), requests);
                 writer.write(line);
                 writer.newLine();
             }

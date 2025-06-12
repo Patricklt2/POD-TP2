@@ -7,6 +7,7 @@ import com.hazelcast.nio.serialization.DataSerializable;
 import java.io.IOException;
 import java.util.Objects;
 
+@Deprecated
 public class Complaint implements DataSerializable, Comparable<Complaint> {
     private String type;
     private String agency;

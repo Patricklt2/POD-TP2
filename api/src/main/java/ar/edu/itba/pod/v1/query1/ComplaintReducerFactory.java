@@ -5,9 +5,9 @@ import com.hazelcast.mapreduce.Reducer;
 import com.hazelcast.mapreduce.ReducerFactory;
 
 @SuppressWarnings("deprecation")
-public class ComplaintReducerFactory implements ReducerFactory<Complaint, Long, Long> {
+public class ComplaintReducerFactory implements ReducerFactory<String, Long, Long> {
     @Override
-    public Reducer<Long, Long> newReducer(Complaint key) {
+    public Reducer<Long, Long> newReducer(String key) {
         return new ComplaintReducer();
     }
 

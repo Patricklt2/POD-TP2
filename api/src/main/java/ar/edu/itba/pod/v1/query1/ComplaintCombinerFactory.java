@@ -4,9 +4,9 @@ import ar.edu.itba.pod.common.Complaint;
 import com.hazelcast.mapreduce.Combiner;
 import com.hazelcast.mapreduce.CombinerFactory;
 
-public class ComplaintCombinerFactory implements CombinerFactory<Complaint, Long, Long> {
+public class ComplaintCombinerFactory implements CombinerFactory<String, Long, Long> {
     @Override
-    public Combiner<Long, Long> newCombiner(Complaint key) {
+    public Combiner<Long, Long> newCombiner(String key) {
         return new ComplaintCombiner();
     }
 

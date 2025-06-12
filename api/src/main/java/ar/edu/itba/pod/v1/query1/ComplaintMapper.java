@@ -5,11 +5,11 @@ import com.hazelcast.mapreduce.Context;
 import com.hazelcast.mapreduce.Mapper;
 
 @SuppressWarnings("deprecation")
-public class ComplaintMapper implements Mapper<Long, Complaint, Complaint, Long> {
+public class ComplaintMapper implements Mapper<Long, String, String, Long> {
     private static final Long ONE = 1L;
 
     @Override
-    public void map(Long key, Complaint row, Context<Complaint, Long> context) {
+    public void map(Long key, String row, Context<String, Long> context) {
         context.emit(row, ONE);
     }
 }
