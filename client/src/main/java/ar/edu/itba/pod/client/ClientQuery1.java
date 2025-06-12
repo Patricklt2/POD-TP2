@@ -1,6 +1,5 @@
 package ar.edu.itba.pod.client;
 
-import ar.edu.itba.pod.common.Complaint;
 import ar.edu.itba.pod.v1.query1.ComplaintCollator;
 import ar.edu.itba.pod.v1.query1.ComplaintCombinerFactory;
 import ar.edu.itba.pod.v1.query1.ComplaintMapper;
@@ -64,7 +63,7 @@ public class ClientQuery1 extends Base {
 
     private static void writeOutputToCsvQuery1(List<Map.Entry<String, Long>> result) {
         try (BufferedWriter writer = Files
-                .newBufferedWriter(Paths.get(env.getProperty("outPath"), "query1Output.csv"),
+                .newBufferedWriter(Paths.get(env.getProperty("outPath"), "query1" + env.getProperty("city") + "Output.csv"),
                         StandardOpenOption.CREATE,
                         StandardOpenOption.TRUNCATE_EXISTING,
                         StandardOpenOption.WRITE)) {
