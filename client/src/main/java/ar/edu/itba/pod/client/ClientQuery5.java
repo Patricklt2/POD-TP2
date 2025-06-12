@@ -65,7 +65,7 @@ public class ClientQuery5 extends Base {
 
     private static void writeOutputToCsvQuery5(List<Map.Entry<Resolutions, Long>> result) {
         try (BufferedWriter writer = Files
-                .newBufferedWriter(Paths.get(env.getProperty("outPath"), "query5Output.csv"),
+                .newBufferedWriter(Paths.get(env.getProperty("outPath"), "query5" + env.getProperty("city") + "Output.csv"),
                 StandardOpenOption.CREATE,
                 StandardOpenOption.TRUNCATE_EXISTING,
                 StandardOpenOption.WRITE)) {
