@@ -2,6 +2,7 @@ package ar.edu.itba.pod.client;
 
 import ar.edu.itba.pod.common.Address;
 import ar.edu.itba.pod.common.AddressEvent;
+import ar.edu.itba.pod.common.HeuristicNeighbourhood;
 import ar.edu.itba.pod.v1.query4.StreetAverageCollator;
 import ar.edu.itba.pod.v1.query4.StreetAverageMapper;
 import ar.edu.itba.pod.v1.query4.StreetAverageReducerFactory;
@@ -49,7 +50,7 @@ public class ClientQuery4 extends Base {
             final IMap<Long, AddressEvent> entries = hz.getMap("addresses");
             final KeyValueSource<Long, AddressEvent> source = KeyValueSource.fromMap(entries);
 
-            final String neighbourhood = env.getProperty("neighbourhood").replaceAll("_", " ");
+            final HeuristicNeighbourhood neighbourhood = HeuristicNeighbourhood.valueOf(env.getProperty("neighbourhood"));
 
             final JobTracker tracker = hz.getJobTracker("averages");
 
