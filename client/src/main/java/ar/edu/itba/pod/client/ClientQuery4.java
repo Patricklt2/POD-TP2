@@ -2,9 +2,7 @@ package ar.edu.itba.pod.client;
 
 import ar.edu.itba.pod.common.Address;
 import ar.edu.itba.pod.common.AddressEvent;
-import ar.edu.itba.pod.common.AddressEventKey;
 import ar.edu.itba.pod.v1.query4.StreetAverageCollator;
-import ar.edu.itba.pod.v1.query4.StreetAverageKeyPredicate;
 import ar.edu.itba.pod.v1.query4.StreetAverageMapper;
 import ar.edu.itba.pod.v1.query4.StreetAverageReducerFactory;
 import com.hazelcast.client.HazelcastClient;
@@ -48,24 +46,22 @@ public class ClientQuery4 extends Base {
         try {
             final HazelcastInstance hz = getHazelcastInstance();
 
-            final IMap<AddressEventKey, AddressEvent> entries = hz.getMap("addresses");
-            final KeyValueSource<AddressEventKey, AddressEvent> source = KeyValueSource.fromMap(entries);
+            final IMap<Long, AddressEvent> entries = hz.getMap("addresses");
+            final KeyValueSource<Long, AddressEvent> source = KeyValueSource.fromMap(entries);
 
             final String neighbourhood = env.getProperty("neighbourhood").replaceAll("_", " ");
 
             final JobTracker tracker = hz.getJobTracker("averages");
 
             parseCsv(entries,
-                    (n, line) -> new AddressEventKey(n, line[6]),
-                    line -> new AddressEvent(new Address(line[4]), line[3]),
-                    (n, line) -> new AddressEventKey(n, line[9]),
-                    (line, sr) -> new AddressEvent(new Address(line[6].charAt(0), line[7], line[8]), sr.get(line[1])));
+                    line -> new AddressEvent(line[6], new Address(line[4]), line[3]),
+                    (line, sr) -> new AddressEvent(line[9], new Address(line[6].charAt(0), line[7], line[8]), sr.get(line[1])));
 
-            final Job<AddressEventKey, AddressEvent> job = tracker.newJob(source);
+            final Job<Long, AddressEvent> job = tracker.newJob(source);
 
             final ICompletableFuture<List<Map.Entry<String, Long>>> future = job
-                    .keyPredicate(new StreetAverageKeyPredicate(neighbourhood))
-                    .mapper(new StreetAverageMapper())
+                    // .keyPredicate(new StreetAverageKeyPredicate(neighbourhood))
+                    .mapper(new StreetAverageMapper(neighbourhood))
                     .reducer(new StreetAverageReducerFactory())
                     .submit(new StreetAverageCollator());
 
@@ -83,7 +79,7 @@ public class ClientQuery4 extends Base {
                         StandardOpenOption.WRITE)) {
             writer.write("street;typePercentage\n");
 
-            final double percenter = 100 / getTypesCount();
+            final double percenter = (double) 100 / getTypesCount();
 
             final DecimalFormat df = new DecimalFormat("#.##");
             df.setRoundingMode(RoundingMode.DOWN);
