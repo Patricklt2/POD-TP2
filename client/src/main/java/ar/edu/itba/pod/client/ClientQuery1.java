@@ -2,6 +2,7 @@ package ar.edu.itba.pod.client;
 
 import ar.edu.itba.pod.common.Complaint;
 import ar.edu.itba.pod.v1.query1.ComplaintCollator;
+import ar.edu.itba.pod.v1.query1.ComplaintCombinerFactory;
 import ar.edu.itba.pod.v1.query1.ComplaintMapper;
 import ar.edu.itba.pod.v1.query1.ComplaintReducerFactory;
 import com.hazelcast.client.HazelcastClient;
@@ -51,6 +52,7 @@ public class ClientQuery1 extends Base {
             Job<Long, Complaint> job = jobTracker.newJob(requestsKeyValueSource);
             ICompletableFuture<List<Map.Entry<Complaint, Long>>> future = job
                     .mapper(new ComplaintMapper())
+                    .combiner(new ComplaintCombinerFactory())
                     .reducer(new ComplaintReducerFactory())
                     .submit(new ComplaintCollator());
 
