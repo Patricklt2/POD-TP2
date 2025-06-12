@@ -74,7 +74,7 @@ public class ClientQuery2 extends Base {
 
     private static void writeOutputToCsvQuery2(List<Map.Entry<NeighborhoodQuadrant, String>> result) {
         try (BufferedWriter writer = Files
-                .newBufferedWriter(Paths.get(env.getProperty("outPath"), "query2Output.csv"),
+                .newBufferedWriter(Paths.get(env.getProperty("outPath"), "query2" + env.getProperty("city") + "Output.csv"),
                         StandardOpenOption.CREATE,
                         StandardOpenOption.TRUNCATE_EXISTING,
                         StandardOpenOption.WRITE)) {
