@@ -109,6 +109,11 @@ public enum HeuristicNeighbourhood {
     HeuristicNeighbourhood(final int i, final int j, final int k, final int l, final String s) {
         this.indexs = List.of(i, j, k, l);
         this.characters = List.of(s.charAt(i), s.charAt(j), s.charAt(k), s.charAt(l));
+
+    public String getCity() {
+        return this == MANHATTAN || this == BRONX || this == BROOKLYN || this == STATEN_ISLAND || this == QUEENS
+                ? "NYC"
+                : "CHI";
     }
 
     public boolean hequals(final String s) {

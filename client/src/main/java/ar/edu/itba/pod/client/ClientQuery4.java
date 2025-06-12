@@ -45,12 +45,19 @@ public class ClientQuery4 extends Base {
         new ClientQuery4().run();
 
         try {
+            final HeuristicNeighbourhood neighbourhood = HeuristicNeighbourhood
+                    .valueOf(env.getProperty("neighbourhood"));
+
+            if (!neighbourhood.getCity().equals(env.getProperty("city"))) {
+                logger.warn("The neighbourhood {} does not match the city {}", neighbourhood, env.getProperty("city"));
+                writeOutputToCsvQuery4(List.of());
+                return;
+            }
+
             final HazelcastInstance hz = getHazelcastInstance();
 
             final IMap<Long, AddressEvent> entries = hz.getMap("addresses");
             final KeyValueSource<Long, AddressEvent> source = KeyValueSource.fromMap(entries);
-
-            final HeuristicNeighbourhood neighbourhood = HeuristicNeighbourhood.valueOf(env.getProperty("neighbourhood"));
 
             final JobTracker tracker = hz.getJobTracker("averages");
 
