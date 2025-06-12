@@ -1,7 +1,5 @@
 package ar.edu.itba.pod.common;
 
-import java.util.List;
-
 public enum HeuristicNeighbourhood {
     // One letter matches
     QUEENS(0, "QUEENS"),
@@ -88,27 +86,28 @@ public enum HeuristicNeighbourhood {
     ROSELAND(0, 2, "ROSELAND"),
     WEST_LAWN(0, 5, "WEST LAWN");
 
-    private final List<Integer> indexs;
-    private final List<Character> characters;
+    private final int[] indexs;
+    private final char[] characters;
 
     HeuristicNeighbourhood(final int i, final String s) {
-        this.indexs = List.of(i);
-        this.characters = List.of(s.charAt(i));
+        this.indexs = new int[] { i };
+        this.characters = new char[] { s.charAt(i) };
     }
 
     HeuristicNeighbourhood(final int i, final int j, final String s) {
-        this.indexs = List.of(i, j);
-        this.characters = List.of(s.charAt(i), s.charAt(j));
+        this.indexs = new int[] { i, j };
+        this.characters = new char[] { s.charAt(i), s.charAt(j) };
     }
 
     HeuristicNeighbourhood(final int i, final int j, final int k, final String s) {
-        this.indexs = List.of(i, j, k);
-        this.characters = List.of(s.charAt(i), s.charAt(j), s.charAt(k));
+        this.indexs = new int[] { i, j, k };
+        this.characters = new char[] { s.charAt(i), s.charAt(j), s.charAt(k) };
     }
 
     HeuristicNeighbourhood(final int i, final int j, final int k, final int l, final String s) {
-        this.indexs = List.of(i, j, k, l);
-        this.characters = List.of(s.charAt(i), s.charAt(j), s.charAt(k), s.charAt(l));
+        this.indexs = new int[] { i, j, k, l };
+        this.characters = new char[] { s.charAt(i), s.charAt(j), s.charAt(k), s.charAt(l) };
+    }
 
     public String getCity() {
         return this == MANHATTAN || this == BRONX || this == BROOKLYN || this == STATEN_ISLAND || this == QUEENS
@@ -117,9 +116,9 @@ public enum HeuristicNeighbourhood {
     }
 
     public boolean hequals(final String s) {
-        for (int test = 0; test < indexs.size(); test++) {
-            int i = indexs.get(test);
-            char c = characters.get(test);
+        for (int test = 0; test < indexs.length; test++) {
+            int i = indexs[test];
+            char c = characters[test];
 
             if (i >= s.length() || s.charAt(i) != c) {
                 return false;
