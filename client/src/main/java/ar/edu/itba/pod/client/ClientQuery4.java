@@ -73,7 +73,7 @@ public class ClientQuery4 extends Base {
 
     private static void writeOutputToCsvQuery4(List<Map.Entry<String, Long>> result) {
         try (BufferedWriter writer = Files
-                .newBufferedWriter(Paths.get(env.getProperty("outPath"), "query4Output.csv"),
+                .newBufferedWriter(Paths.get(env.getProperty("outPath"), "query4" + env.getProperty("city") + "Output.csv"),
                         StandardOpenOption.CREATE,
                         StandardOpenOption.TRUNCATE_EXISTING,
                         StandardOpenOption.WRITE)) {
