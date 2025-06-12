@@ -68,7 +68,7 @@ public class ClientQuery3 extends Base {
 
     private static void writeOutputToCsvQuery3(List<String> result) {
         try (BufferedWriter writer = Files.newBufferedWriter(
-                Paths.get(env.getProperty("outPath"), "query3Output.csv"),
+                Paths.get(env.getProperty("outPath"), "query3" + env.getProperty("city") + "Output.csv"),
                 StandardOpenOption.CREATE,
                 StandardOpenOption.TRUNCATE_EXISTING,
                 StandardOpenOption.WRITE)) {
