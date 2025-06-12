@@ -45,11 +45,12 @@ public class ClientQuery4 extends Base {
         new ClientQuery4().run();
 
         try {
+            final String city = env.getProperty("city");
             final HeuristicNeighbourhood neighbourhood = HeuristicNeighbourhood
                     .valueOf(env.getProperty("neighbourhood"));
 
-            if (!neighbourhood.getCity().equals(env.getProperty("city"))) {
-                logger.warn("The neighbourhood {} does not match the city {}", neighbourhood, env.getProperty("city"));
+            if (!neighbourhood.getCity().equals(city)) {
+                logger.warn("The neighbourhood {} does not match the city {}", neighbourhood, city);
                 writeOutputToCsvQuery4(List.of());
                 return;
             }
@@ -62,14 +63,13 @@ public class ClientQuery4 extends Base {
             final JobTracker tracker = hz.getJobTracker("averages");
 
             parseCsv(entries,
-                    line -> new AddressEvent(line[6], new Address(line[4]), line[3]),
-                    (line, sr) -> new AddressEvent(line[9], new Address(line[6].charAt(0), line[7], line[8]), sr.get(line[1])));
+                    line -> neighbourhood.hequals(line[6]) ? new AddressEvent(new Address(line[4]), line[3]) : null,
+                    (line, sr) -> neighbourhood.hequals(line[9]) ? new AddressEvent(new Address(line[6].charAt(0), line[7], line[8]), sr.get(line[1])) : null);
 
             final Job<Long, AddressEvent> job = tracker.newJob(source);
 
             final ICompletableFuture<List<Map.Entry<String, Long>>> future = job
-                    // .keyPredicate(new StreetAverageKeyPredicate(neighbourhood))
-                    .mapper(new StreetAverageMapper(neighbourhood))
+                    .mapper(new StreetAverageMapper())
                     .reducer(new StreetAverageReducerFactory())
                     .submit(new StreetAverageCollator());
 
