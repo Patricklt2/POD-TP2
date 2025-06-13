@@ -73,7 +73,7 @@ public class ClientQuery1 extends Base {
             for (Map.Entry<String, Long> entry : result) {
                 Long requests = entry.getValue();
 
-                String line = String.format("%s%d",entry.getKey(), requests);
+                String line = String.format("%s;%d",entry.getKey(), requests);
                 writer.write(line);
                 writer.newLine();
             }
