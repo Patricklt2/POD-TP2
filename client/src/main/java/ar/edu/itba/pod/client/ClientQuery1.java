@@ -44,8 +44,8 @@ public class ClientQuery1 extends Base {
             // Job Tracker
             JobTracker jobTracker = hz.getJobTracker("complaints");
 
-            parseCsv(requestsIMap, line -> String.format("%s;%s;",line[3], line[2]),
-                    (line, srCodeToDescription) -> String.format("%s;%s;",srCodeToDescription.get(line[1]), line[2]));
+            parseCsv(requestsIMap, line -> new StringBuilder().append(line[3]).append(';').append(line[2]).toString(),
+                    (line, srCodeToDescription) -> new StringBuilder().append(srCodeToDescription.get(line[1])).append(';').append(line[2]).toString());
 
             // MapReduce Job
             Job<Long, String> job = jobTracker.newJob(requestsKeyValueSource);
