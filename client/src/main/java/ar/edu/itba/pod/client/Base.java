@@ -232,7 +232,13 @@ public abstract class Base {
 
             for (String line : lines) {
                 final String[] data = line.split(";");
-                out.put(key.apply(counter.getAndIncrement(), data), lambda.apply(data));
+
+                final V value = lambda.apply(data);
+                if (value == null) {
+                    continue;
+                }
+
+                out.put(key.apply(counter.getAndIncrement(), data), value);
             }
 
             imap.putAll(out);

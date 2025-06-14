@@ -2,6 +2,7 @@ package ar.edu.itba.pod.client;
 
 import ar.edu.itba.pod.common.Address;
 import ar.edu.itba.pod.common.AddressEvent;
+import ar.edu.itba.pod.common.HeuristicNeighbourhood;
 import ar.edu.itba.pod.v1.query4.StreetAverageCollator;
 import ar.edu.itba.pod.v1.query4.StreetAverageMapper;
 import ar.edu.itba.pod.v1.query4.StreetAverageReducerFactory;
@@ -44,24 +45,31 @@ public class ClientQuery4 extends Base {
         new ClientQuery4().run();
 
         try {
+            final String city = env.getProperty("city");
+            final HeuristicNeighbourhood neighbourhood = HeuristicNeighbourhood
+                    .valueOf(env.getProperty("neighbourhood"));
+
+            if (!neighbourhood.getCity().equals(city)) {
+                logger.warn("The neighbourhood {} does not match the city {}", neighbourhood, city);
+                writeOutputToCsvQuery4(List.of());
+                return;
+            }
+
             final HazelcastInstance hz = getHazelcastInstance();
 
             final IMap<Long, AddressEvent> entries = hz.getMap("addresses");
             final KeyValueSource<Long, AddressEvent> source = KeyValueSource.fromMap(entries);
 
-            final String neighbourhood = env.getProperty("neighbourhood").replaceAll("_", " ");
-
             final JobTracker tracker = hz.getJobTracker("averages");
 
             parseCsv(entries,
-                    line -> new AddressEvent(line[6], new Address(line[4]), line[3]),
-                    (line, sr) -> new AddressEvent(line[9], new Address(line[6].charAt(0), line[7], line[8]), sr.get(line[1])));
+                    line -> neighbourhood.hequals(line[6]) ? new AddressEvent(new Address(line[4]), line[3]) : null,
+                    (line, sr) -> neighbourhood.hequals(line[9]) ? new AddressEvent(new Address(line[6].charAt(0), line[7], line[8]), sr.get(line[1])) : null);
 
             final Job<Long, AddressEvent> job = tracker.newJob(source);
 
             final ICompletableFuture<List<Map.Entry<String, Long>>> future = job
-                    // .keyPredicate(new StreetAverageKeyPredicate(neighbourhood))
-                    .mapper(new StreetAverageMapper(neighbourhood))
+                    .mapper(new StreetAverageMapper())
                     .reducer(new StreetAverageReducerFactory())
                     .submit(new StreetAverageCollator());
 
