@@ -45,7 +45,7 @@ public class ClientQuery5 extends Base {
             JobTracker jobTracker = hz.getJobTracker("solvedYTD");
 
             parseCsv(requestsIMap,
-                    line -> !line[5].equals("Closed") ? new Resolutions(line[2], LocalDateTime.parse(line[1], getDateTimeFormatter())) : null,
+                    line -> line[5].equals("Closed") ? new Resolutions(line[2], LocalDateTime.parse(line[1], getDateTimeFormatter())) : null,
                     (line, unused) -> line[3].equals("Open") ? new Resolutions(line[2], LocalDateTime.parse(line[4], getDateTimeFormatter())) : null);
 
             // MapReduce Job
