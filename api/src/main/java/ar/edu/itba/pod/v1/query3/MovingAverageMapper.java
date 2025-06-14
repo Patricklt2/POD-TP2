@@ -8,18 +8,19 @@ import com.hazelcast.mapreduce.Mapper;
 public class MovingAverageMapper implements Mapper<Long, Resolutions, Resolutions, Long> {
     private static final Long ONE = 1L;
 
-    private final String city;
+    private final boolean isCityNYC;
 
     public MovingAverageMapper(String city) {
-        this.city = city;
+        this.isCityNYC = city.equals("NYC");
     }
 
     @Override
     public void map(Long key, Resolutions row, Context<Resolutions, Long> context) {
-        boolean isOpen = city.equals("NYC")
+        boolean isOpen = isCityNYC
                 ? !row.getStatus().equals("Closed")
                 : row.getStatus().equals("Open");
-        if(isOpen) {
+
+        if (isOpen) {
             context.emit(row, ONE);
         }
     }

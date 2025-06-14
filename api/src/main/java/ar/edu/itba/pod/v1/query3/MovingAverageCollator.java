@@ -41,21 +41,27 @@ public class MovingAverageCollator implements Collator<Map.Entry<Resolutions, Lo
 
                 for (int i = 0; i < 12; i++) {
                     rollingSum += monthly[i];
+                    double avg;
 
                     if (i + 1 >= w) {
                         if (i + 1 > w) {
                             rollingSum -= monthly[i - w];
                         }
-                        double avg = rollingSum / (double) w;
-                        result.add(String.format("%s;%d;%d;%.2f", agency, year, i + 1, Math.floor(avg * 100) / 100));
+                        avg = rollingSum / (double) w;
                     } else {
-                        double avg = rollingSum / (double) (i + 1);
-                        result.add(String.format("%s;%d;%d;%.2f", agency, year, i + 1, Math.floor(avg * 100) / 100));
+                        avg = rollingSum / (double) (i + 1);
                     }
+                    double floor = Math.floor(avg * 100) / 100.0;
+                    StringBuilder sb = new StringBuilder()
+                            .append(agency).append(';')
+                            .append(year).append(';')
+                            .append(i + 1).append(';')
+                            .append(String.format(Locale.ROOT, "%.2f", floor));
+                    result.add(sb.toString());
+
                 }
             }
         }
-
         return result;
     }
 }
