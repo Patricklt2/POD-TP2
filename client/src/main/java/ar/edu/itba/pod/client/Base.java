@@ -113,17 +113,10 @@ public abstract class Base {
         };
     }
 
-    protected static <T> long parseCsv(IMap<Long, T> entries, Function<String[], T> nycLambda,
-            BiFunction<String[], Map<String, String>, T> chiLambda) throws IOException, InterruptedException {
-        return parseCsv(entries, (n, l) -> n, nycLambda, (n, l) -> n, chiLambda);
-    }
-
-    // The triple holy mother of optimization
-    protected static <K, V> long parseCsv(IMap<K, V> entries,
-            BiFunction<Long, String[], K> nycKey,
-            Function<String[], V> nycLambda,
-            BiFunction<Long, String[], K> chiKey, // TriFunction doesn't exist natively in Java :/
-            BiFunction<String[], Map<String, String>, V> chiLambda) throws IOException, InterruptedException {
+    protected static <V> long parseCsv(
+            final IMap<Long, V> entries,
+            final Function<String[], V> nycLambda,
+            final BiFunction<String[], Map<String, String>, V> chiLambda) throws IOException, InterruptedException {
         final Logger logger = LoggerFactory.getLogger(Base.class);
 
         final AtomicLong auxCounter = new AtomicLong(0);
@@ -135,8 +128,8 @@ public abstract class Base {
         logger.info("Starting csv parse más descriptivo");
 
         if (city.equalsIgnoreCase("CHI")) {
-            try (Stream<String> serviceLines = Files.lines(getTypesFilePath(city), StandardCharsets.UTF_8).skip(1)) {
-                serviceLines
+            try (final Stream<String> lines = Files.lines(getTypesFilePath(city), StandardCharsets.UTF_8).skip(1)) {
+                lines
                         .map(line -> line.split(";"))
                         .forEach(parts -> srCodeToDescription.put(parts[0], parts[1]));
             }
@@ -156,9 +149,7 @@ public abstract class Base {
                             entries,
                             new ArrayList<>(batch),
                             auxCounter,
-                            nycKey,
                             nycLambda,
-                            chiKey,
                             chiLambda,
                             srCodeToDescription));
 
@@ -171,16 +162,14 @@ public abstract class Base {
                         entries,
                         new ArrayList<>(batch),
                         auxCounter,
-                        nycKey,
                         nycLambda,
-                        chiKey,
                         chiLambda,
                         srCodeToDescription));
             }
         }
 
         executor.shutdown();
-        executor.awaitTermination(4, TimeUnit.HOURS);
+        executor.awaitTermination(20, TimeUnit.MINUTES);
 
         logger.info("End csv parse más descriptivo");
 
@@ -193,44 +182,21 @@ public abstract class Base {
         }
     }
 
-    private static class Reader<K, V> implements Runnable {
-        private final IMap<K, V> imap;
-        private final List<String> lines;
-        private final AtomicLong counter;
-        private final BiFunction<Long, String[], K> nycKey;
-        private final Function<String[], V> nycValue;
-        private final BiFunction<Long, String[], K> chiKey;
-        private final BiFunction<String[], Map<String, String>, V> chiValue;
-        private final Map<String, String> chicago_codes;
-
-        public Reader(
-                final IMap<K, V> imap,
-                final List<String> lines,
-                final AtomicLong counter,
-                final BiFunction<Long, String[], K> nycKey,
-                final Function<String[], V> nycLambda,
-                final BiFunction<Long, String[], K> chiKey,
-                final BiFunction<String[], Map<String, String>, V> chiLambda,
-                final Map<String, String> srCodeToDescription) {
-            this.imap = imap;
-            this.lines = lines;
-            this.counter = counter;
-            this.nycKey = nycKey;
-            this.nycValue = nycLambda;
-            this.chiKey = chiKey;
-            this.chiValue = chiLambda;
-            this.chicago_codes = srCodeToDescription;
-        }
-
+    private static record Reader<V>(
+            IMap<Long, V> imap,
+            List<String> lines,
+            AtomicLong counter,
+            Function<String[], V> nyc,
+            BiFunction<String[], Map<String, String>, V> chi,
+            Map<String, String> chicago_codes) implements Runnable {
         @Override
         public void run() {
-            final Map<K, V> out = new HashMap<>(lines.size() + 1, 1.0f);
+            final Map<Long, V> out = new HashMap<>(lines.size() + 1, 1.0f);
 
-            final boolean nyc = env.getProperty("city").equalsIgnoreCase("NYC");
-            final BiFunction<Long, String[], K> key = nyc ? nycKey : chiKey;
-            final Function<String[], V> lambda = nyc ? nycValue : (l) -> chiValue.apply(l, chicago_codes);
+            final boolean isNYC = env.getProperty("city").equalsIgnoreCase("NYC");
+            final Function<String[], V> lambda = isNYC ? nyc : (l) -> chi.apply(l, chicago_codes);
 
-            for (String line : lines) {
+            for (final String line : lines) {
                 final String[] data = line.split(";");
 
                 final V value = lambda.apply(data);
@@ -238,7 +204,7 @@ public abstract class Base {
                     continue;
                 }
 
-                out.put(key.apply(counter.getAndIncrement(), data), value);
+                out.put(counter.getAndIncrement(), value);
             }
 
             imap.putAll(out);
