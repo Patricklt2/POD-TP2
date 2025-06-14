@@ -11,7 +11,8 @@ public class GeoLocation implements DataSerializable, Comparable<GeoLocation> {
     private long latitude;
     private long longitude;
 
-    public GeoLocation() {}
+    public GeoLocation() {
+    }
 
     public GeoLocation(long latitude, long longitude) {
         this.latitude = latitude;
@@ -41,13 +42,14 @@ public class GeoLocation implements DataSerializable, Comparable<GeoLocation> {
     @Override
     public int compareTo(GeoLocation o) {
         int cmp = Long.compare(this.latitude, o.latitude);
-        if (cmp != 0) return cmp;
+        if (cmp != 0)
+            return cmp;
         return Long.compare(this.longitude, o.longitude);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(latitude,longitude);
+        return Objects.hash(latitude, longitude);
     }
 
     @Override

@@ -11,7 +11,8 @@ public class NeighborhoodQuadrant implements DataSerializable {
     private GeoLocation location;
     private String neighborhood;
 
-    public NeighborhoodQuadrant() {}
+    public NeighborhoodQuadrant() {
+    }
 
     public NeighborhoodQuadrant(final String neighborhood, final GeoLocation location) {
         this.location = location;

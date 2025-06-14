@@ -13,7 +13,8 @@ public class ResolutionsCollator implements Collator<Map.Entry<Resolutions, Long
     @Override
     public List<Map.Entry<Resolutions, Long>> collate(Iterable<Map.Entry<Resolutions, Long>> values) {
         List<Map.Entry<Resolutions, Long>> list = StreamSupport.stream(values.spliterator(), false)
-                .sorted(Comparator.<Map.Entry<Resolutions, Long>, String>comparing(e -> e.getKey().getAgency()).reversed()
+                .sorted(Comparator.<Map.Entry<Resolutions, Long>, String>comparing(e -> e.getKey().getAgency())
+                        .reversed()
                         .thenComparingInt(entry -> entry.getKey().getYear())
                         .thenComparingInt(entry -> entry.getKey().getMonth()))
                 .collect(Collectors.toList());
@@ -21,7 +22,6 @@ public class ResolutionsCollator implements Collator<Map.Entry<Resolutions, Long
         long aux = 0;
         String agency = "";
         int year = 0;
-
 
         for (Map.Entry<Resolutions, Long> entry : list) {
             if (entry.getKey().getYear() != year || !entry.getKey().getAgency().equals(agency)) {

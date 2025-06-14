@@ -82,7 +82,9 @@ public class ClientQuery4 extends Base {
                             types.add(line[1]);
                         }
 
-                        return neighbourhood.hequals(line[9]) ? new AddressEvent(new Address(line[6].charAt(0), line[7], line[8]), sr.get(line[1])) : null;
+                        return neighbourhood.hequals(line[9])
+                                ? new AddressEvent(new Address(line[6].charAt(0), line[7], line[8]), sr.get(line[1]))
+                                : null;
                     });
 
             final Job<Long, AddressEvent> job = tracker.newJob(source);
@@ -100,7 +102,8 @@ public class ClientQuery4 extends Base {
 
     private static void writeOutputToCsvQuery4(List<Map.Entry<String, Long>> result, int typesCount) {
         try (BufferedWriter writer = Files
-                .newBufferedWriter(Paths.get(env.getProperty("outPath"), "query4" + env.getProperty("city") + "Output.csv"),
+                .newBufferedWriter(
+                        Paths.get(env.getProperty("outPath"), "query4" + env.getProperty("city") + "Output.csv"),
                         StandardOpenOption.CREATE,
                         StandardOpenOption.TRUNCATE_EXISTING,
                         StandardOpenOption.WRITE)) {

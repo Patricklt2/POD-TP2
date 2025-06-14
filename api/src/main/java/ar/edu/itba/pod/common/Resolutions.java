@@ -13,9 +13,9 @@ public class Resolutions implements DataSerializable {
     private int year;
     private int month;
 
-    public Resolutions() {}
+    public Resolutions() {
+    }
 
-    //chusmear YearMonth (recomendado al fondo de la consigna)
     public Resolutions(String agency, LocalDateTime resolutionDate) {
         this.agency = agency;
         this.year = resolutionDate.getYear();
