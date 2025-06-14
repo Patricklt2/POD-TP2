@@ -1,7 +1,7 @@
 package ar.edu.itba.pod.client;
 
 import ar.edu.itba.pod.common.Resolutions;
-import ar.edu.itba.pod.v0Mappers.GenericCountMapper;
+import ar.edu.itba.pod.v0.GenericCountMapper;
 import ar.edu.itba.pod.v1.query3.MovingAverageReducerFactory;
 import ar.edu.itba.pod.v1.query3.MovingAverageCollator;
 import com.hazelcast.client.HazelcastClient;
