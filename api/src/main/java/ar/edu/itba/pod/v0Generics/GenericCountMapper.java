@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:api/src/main/java/ar/edu/itba/pod/v0Generics/GenericCountMapper.java
 package ar.edu.itba.pod.v0Generics;
-========
-package ar.edu.itba.pod.v0;
->>>>>>>> 3efc8040efcbcbad4e00644bebcf66dbfe588dfc:api/src/main/java/ar/edu/itba/pod/v0/GenericCountMapper.java
 
 import com.hazelcast.mapreduce.Context;
 import com.hazelcast.mapreduce.Mapper;

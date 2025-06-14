@@ -45,7 +45,8 @@ public class ClientQuery1 extends Base {
             JobTracker jobTracker = hz.getJobTracker("complaints");
 
             parseCsv(requestsIMap, line -> new StringBuilder().append(line[3]).append(';').append(line[2]).toString(),
-                    (line, srCodeToDescription) -> new StringBuilder().append(srCodeToDescription.get(line[1])).append(';').append(line[2]).toString());
+                    (line, srCodeToDescription) -> new StringBuilder().append(srCodeToDescription.get(line[1]))
+                            .append(';').append(line[2]).toString());
 
             // MapReduce Job
             Job<Long, String> job = jobTracker.newJob(requestsKeyValueSource);
@@ -63,7 +64,8 @@ public class ClientQuery1 extends Base {
 
     private static void writeOutputToCsvQuery1(List<Map.Entry<String, Long>> result) {
         try (BufferedWriter writer = Files
-                .newBufferedWriter(Paths.get(env.getProperty("outPath"), "query1" + env.getProperty("city") + "Output.csv"),
+                .newBufferedWriter(
+                        Paths.get(env.getProperty("outPath"), "query1" + env.getProperty("city") + "Output.csv"),
                         StandardOpenOption.CREATE,
                         StandardOpenOption.TRUNCATE_EXISTING,
                         StandardOpenOption.WRITE)) {
@@ -73,12 +75,12 @@ public class ClientQuery1 extends Base {
             for (Map.Entry<String, Long> entry : result) {
                 Long requests = entry.getValue();
 
-                String line = String.format("%s;%d",entry.getKey(), requests);
+                String line = String.format("%s;%d", entry.getKey(), requests);
                 writer.write(line);
                 writer.newLine();
             }
         } catch (IOException e) {
-            logger.error("Error while writing output for query1",e);
+            logger.error("Error while writing output for query1", e);
         }
     }
 }
