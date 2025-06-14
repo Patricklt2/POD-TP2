@@ -137,9 +137,9 @@ public abstract class Base {
 
         if (city.equalsIgnoreCase("CHI")) {
             try (Stream<String> serviceLines = Files.lines(getTypesFilePath(city), StandardCharsets.UTF_8).skip(1)) {
-                    serviceLines
-                            .map(line -> line.split(";"))
-                            .forEach(parts -> srCodeToDescription.put(parts[0], parts[1]));
+                serviceLines
+                        .map(line -> line.split(";"))
+                        .forEach(parts -> srCodeToDescription.put(parts[0], parts[1]));
             }
         }
 
