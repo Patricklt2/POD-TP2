@@ -7,7 +7,7 @@ import com.hazelcast.nio.serialization.DataSerializable;
 import java.io.IOException;
 import java.util.Objects;
 
-public class Address implements DataSerializable, Comparable<Address> {
+public class Address implements DataSerializable {
     private char direction;
     private String name;
     private String type;
@@ -77,11 +77,5 @@ public class Address implements DataSerializable, Comparable<Address> {
                     .append(type)
                     .toString();
         }
-    }
-
-    @Override
-    public int compareTo(Address o) {
-        return String.CASE_INSENSITIVE_ORDER.compare(
-                this.toString(), o.toString());
     }
 }
