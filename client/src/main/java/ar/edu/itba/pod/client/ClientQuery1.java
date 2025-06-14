@@ -1,9 +1,9 @@
 package ar.edu.itba.pod.client;
 
-import ar.edu.itba.pod.v0Mappers.GenericCountMapper;
+import ar.edu.itba.pod.v0Generics.GenericCountMapper;
+import ar.edu.itba.pod.v0Generics.GenericCountReducerFactory;
 import ar.edu.itba.pod.v1.query1.ComplaintCollator;
 import ar.edu.itba.pod.v1.query1.ComplaintCombinerFactory;
-import ar.edu.itba.pod.v1.query1.ComplaintReducerFactory;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.ICompletableFuture;
@@ -52,7 +52,7 @@ public class ClientQuery1 extends Base {
             ICompletableFuture<List<Map.Entry<String, Long>>> future = job
                     .mapper(new GenericCountMapper<>())
                     .combiner(new ComplaintCombinerFactory())
-                    .reducer(new ComplaintReducerFactory())
+                    .reducer(new GenericCountReducerFactory<>())
                     .submit(new ComplaintCollator());
 
             writeOutputToCsvQuery1(future.get());

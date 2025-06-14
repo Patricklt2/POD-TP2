@@ -1,4 +1,4 @@
-package ar.edu.itba.pod.v0Mappers;
+package ar.edu.itba.pod.v0Generics;
 
 import com.hazelcast.mapreduce.Context;
 import com.hazelcast.mapreduce.Mapper;

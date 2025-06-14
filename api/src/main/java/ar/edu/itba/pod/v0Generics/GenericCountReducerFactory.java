@@ -1,16 +1,16 @@
-package ar.edu.itba.pod.v1.query1;
+package ar.edu.itba.pod.v0Generics;
 
 import com.hazelcast.mapreduce.Reducer;
 import com.hazelcast.mapreduce.ReducerFactory;
 
 @SuppressWarnings("deprecation")
-public class ComplaintReducerFactory implements ReducerFactory<String, Long, Long> {
+public class GenericCountReducerFactory<K> implements ReducerFactory<K, Long, Long> {
     @Override
-    public Reducer<Long, Long> newReducer(String key) {
-        return new ComplaintReducer();
+    public Reducer<Long, Long> newReducer(K key) {
+        return new GenericCountReducerFactory.GenericCountReducer();
     }
 
-    private static class ComplaintReducer extends Reducer<Long, Long> {
+    private static class GenericCountReducer extends Reducer<Long, Long> {
         private Long sum = 0L;
 
         @Override

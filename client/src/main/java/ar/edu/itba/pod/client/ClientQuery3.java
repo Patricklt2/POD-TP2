@@ -1,8 +1,8 @@
 package ar.edu.itba.pod.client;
 
 import ar.edu.itba.pod.common.Resolutions;
-import ar.edu.itba.pod.v0Mappers.GenericCountMapper;
-import ar.edu.itba.pod.v1.query3.MovingAverageReducerFactory;
+import ar.edu.itba.pod.v0Generics.GenericCountMapper;
+import ar.edu.itba.pod.v0Generics.GenericCountReducerFactory;
 import ar.edu.itba.pod.v1.query3.MovingAverageCollator;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.core.HazelcastInstance;
@@ -56,7 +56,7 @@ public class ClientQuery3 extends Base {
             Job<Long, Resolutions> job = tracker.newJob(source);
             ICompletableFuture<List<String>> future = job
                     .mapper(new GenericCountMapper<>())
-                    .reducer(new MovingAverageReducerFactory())
+                    .reducer(new GenericCountReducerFactory<>())
                     .submit(new MovingAverageCollator(Integer.parseInt(env.getProperty("w"))));
 
             writeOutputToCsvQuery3(future.get());
