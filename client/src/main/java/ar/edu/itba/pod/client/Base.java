@@ -22,12 +22,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public abstract class Base {
-    // Runtime.getRuntime().availableProcessors()
-    private static final int MAX_THREADS = 8;
+    private static final int MAX_THREADS = Runtime.getRuntime().availableProcessors();
     private static final int BATCH_SIZE = 25_000;
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
