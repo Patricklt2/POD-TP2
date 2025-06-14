@@ -45,8 +45,12 @@ public class ClientQuery5 extends Base {
             JobTracker jobTracker = hz.getJobTracker("solvedYTD");
 
             parseCsv(requestsIMap,
-                    line -> line[5].equals("Closed") ? new Resolutions(line[2], LocalDateTime.parse(line[1], getDateTimeFormatter())) : null,
-                    (line, unused) -> line[3].equals("Completed") ? new Resolutions(line[2], LocalDateTime.parse(line[4], getDateTimeFormatter())) : null);
+                    line -> line[5].equals("Closed")
+                            ? new Resolutions(line[2], LocalDateTime.parse(line[1], getDateTimeFormatter()))
+                            : null,
+                    (line, unused) -> line[3].equals("Completed")
+                            ? new Resolutions(line[2], LocalDateTime.parse(line[4], getDateTimeFormatter()))
+                            : null);
 
             // MapReduce Job
             Job<Long, Resolutions> job = jobTracker.newJob(requestsKeyValueSource);
@@ -55,9 +59,7 @@ public class ClientQuery5 extends Base {
                     .reducer(new ResolutionsReducerFactory())
                     .submit(new ResolutionsCollator());
 
-
-           writeOutputToCsvQuery5(future.get());
-
+            writeOutputToCsvQuery5(future.get());
         } finally {
             HazelcastClient.shutdownAll();
         }
@@ -65,16 +67,17 @@ public class ClientQuery5 extends Base {
 
     private static void writeOutputToCsvQuery5(List<Map.Entry<Resolutions, Long>> result) {
         try (BufferedWriter writer = Files
-                .newBufferedWriter(Paths.get(env.getProperty("outPath"), "query5" + env.getProperty("city") + "Output.csv"),
-                StandardOpenOption.CREATE,
-                StandardOpenOption.TRUNCATE_EXISTING,
-                StandardOpenOption.WRITE)) {
+                .newBufferedWriter(
+                        Paths.get(env.getProperty("outPath"), "query5" + env.getProperty("city") + "Output.csv"),
+                        StandardOpenOption.CREATE,
+                        StandardOpenOption.TRUNCATE_EXISTING,
+                        StandardOpenOption.WRITE)) {
             writer.write("agency;year;month;resolvedYTD");
             writer.newLine();
 
             for (Map.Entry<Resolutions, Long> entry : result) {
                 Resolutions resolutions = entry.getKey();
-                Long solved = entry.getValue();
+                long solved = entry.getValue();
 
                 String line = String.format("%s;%d;%d;%d",
                         resolutions.getAgency(),
@@ -87,9 +90,7 @@ public class ClientQuery5 extends Base {
             }
 
         } catch (IOException e) {
-            logger.error("Error while writing output for query 5",e);
+            logger.error("Error while writing output for query 5", e);
         }
     }
 }
-
-// [A,Y,D] --> [A,Y,D] [C] --> <[A, Y, D], [SUM]>

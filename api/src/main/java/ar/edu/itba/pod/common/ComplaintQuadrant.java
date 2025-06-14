@@ -12,7 +12,8 @@ public class ComplaintQuadrant implements DataSerializable, Comparable<Complaint
     private GeoLocation location;
     private String neighborhood;
 
-    public ComplaintQuadrant() {}
+    public ComplaintQuadrant() {
+    }
 
     public ComplaintQuadrant(final String type, final String neighborhood, final long latitude, final long longitude) {
         this.type = type;
@@ -50,7 +51,8 @@ public class ComplaintQuadrant implements DataSerializable, Comparable<Complaint
     @Override
     public int compareTo(ComplaintQuadrant other) {
         int cmp = this.neighborhood.compareTo(other.neighborhood);
-        if (cmp != 0) return cmp;
+        if (cmp != 0)
+            return cmp;
         return this.location.compareTo(other.location);
     }
 

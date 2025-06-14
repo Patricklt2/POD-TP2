@@ -11,7 +11,8 @@ public class AddressEventKey implements DataSerializable {
     private long id;
     private String neighbourhood;
 
-    public AddressEventKey() {}
+    public AddressEventKey() {
+    }
 
     public AddressEventKey(final long id, final String neighbourhood) {
         this.id = id;

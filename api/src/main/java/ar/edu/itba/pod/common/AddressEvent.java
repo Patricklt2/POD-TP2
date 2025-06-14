@@ -11,7 +11,8 @@ public class AddressEvent implements DataSerializable {
     private Address address;
     private String type;
 
-    public AddressEvent() {}
+    public AddressEvent() {
+    }
 
     public AddressEvent(final Address address, final String type) {
         this.address = address;

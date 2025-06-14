@@ -13,6 +13,7 @@ public class MovingAverageCollator implements Collator<Map.Entry<Resolutions, Lo
     public MovingAverageCollator(int w) {
         this.w = w;
     }
+
     @Override
     public List<String> collate(Iterable<Map.Entry<Resolutions, Long>> values) {
 
@@ -65,7 +66,3 @@ public class MovingAverageCollator implements Collator<Map.Entry<Resolutions, Lo
         return result;
     }
 }
-
-
-
-

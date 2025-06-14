@@ -25,7 +25,3 @@ public class MovingAverageReducerFactory implements ReducerFactory<Resolutions, 
         }
     }
 }
-
-
-
-

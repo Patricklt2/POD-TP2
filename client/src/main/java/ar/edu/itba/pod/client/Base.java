@@ -225,7 +225,7 @@ public abstract class Base {
         public void run() {
             final Map<K, V> out = new HashMap<>(lines.size() + 1, 1.0f);
 
-            final Boolean nyc = env.getProperty("city").equalsIgnoreCase("NYC");
+            final boolean nyc = env.getProperty("city").equalsIgnoreCase("NYC");
             final BiFunction<Long, String[], K> key = nyc ? nycKey : chiKey;
             final Function<String[], V> lambda = nyc ? nycValue : (l) -> chiValue.apply(l, chicago_codes);
 

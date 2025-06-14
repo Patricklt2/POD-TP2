@@ -10,11 +10,14 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @SuppressWarnings("deprecation")
-public class ComplaintQuadrantCollator implements Collator<Map.Entry<NeighborhoodQuadrant, String>, List<Map.Entry<NeighborhoodQuadrant, String>>> {
+public class ComplaintQuadrantCollator
+        implements Collator<Map.Entry<NeighborhoodQuadrant, String>, List<Map.Entry<NeighborhoodQuadrant, String>>> {
     @Override
-    public List<Map.Entry<NeighborhoodQuadrant, String>> collate(Iterable<Map.Entry<NeighborhoodQuadrant, String>> values) {
+    public List<Map.Entry<NeighborhoodQuadrant, String>> collate(
+            Iterable<Map.Entry<NeighborhoodQuadrant, String>> values) {
         return StreamSupport.stream(values.spliterator(), false)
-                .sorted(Comparator.comparing((Map.Entry<NeighborhoodQuadrant, String> entry) -> entry.getKey().getNeighborhood())
+                .sorted(Comparator
+                        .comparing((Map.Entry<NeighborhoodQuadrant, String> entry) -> entry.getKey().getNeighborhood())
                         .thenComparing(entry -> entry.getKey().getLocation().getLatitude())
                         .thenComparing(entry -> entry.getKey().getLocation().getLongitude()))
                 .collect(Collectors.toList());
