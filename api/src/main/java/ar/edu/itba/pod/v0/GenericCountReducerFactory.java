@@ -6,15 +6,15 @@ import com.hazelcast.mapreduce.ReducerFactory;
 @SuppressWarnings("deprecation")
 public class GenericCountReducerFactory<K> implements ReducerFactory<K, Long, Long> {
     @Override
-    public Reducer<Long, Long> newReducer(K key) {
+    public Reducer<Long, Long> newReducer(final K key) {
         return new GenericCountReducerFactory.GenericCountReducer();
     }
 
     private static class GenericCountReducer extends Reducer<Long, Long> {
-        private Long sum = 0L;
+        private long sum = 0L;
 
         @Override
-        public void reduce(Long value) {
+        public void reduce(final Long value) {
             sum += value;
         }
 

@@ -6,12 +6,12 @@ import com.hazelcast.mapreduce.CombinerFactory;
 @SuppressWarnings("deprecation")
 public class GenericCountCombinerFactory<K> implements CombinerFactory<K, Long, Long> {
     @Override
-    public Combiner<Long, Long> newCombiner(K key) {
+    public Combiner<Long, Long> newCombiner(final K key) {
         return new GenericCountCombinerFactory.CountCombiner();
     }
 
     private static class CountCombiner extends Combiner<Long, Long> {
-        private Long sum = 0L;
+        private long sum = 0L;
 
         @Override
         public void reset() {
@@ -19,7 +19,7 @@ public class GenericCountCombinerFactory<K> implements CombinerFactory<K, Long, 
         }
 
         @Override
-        public void combine(Long value) {
+        public void combine(final Long value) {
             sum += value;
         }
 
