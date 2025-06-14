@@ -115,8 +115,8 @@ public abstract class Base {
     }
 
     protected static <T> long parseCsv(IMap<Long, T> entries, Function<String[], T> nycLambda,
-            BiFunction<String[], Map<String, String>, T> chiLambda, Predicate<T> p) throws IOException, InterruptedException {
-        return parseCsv(entries, (n, l) -> n, nycLambda, (n, l) -> n, chiLambda, p);
+            BiFunction<String[], Map<String, String>, T> chiLambda) throws IOException, InterruptedException {
+        return parseCsv(entries, (n, l) -> n, nycLambda, (n, l) -> n, chiLambda);
     }
 
     // The triple holy mother of optimization
@@ -124,8 +124,7 @@ public abstract class Base {
             BiFunction<Long, String[], K> nycKey,
             Function<String[], V> nycLambda,
             BiFunction<Long, String[], K> chiKey, // TriFunction doesn't exist natively in Java :/
-            BiFunction<String[], Map<String, String>, V> chiLambda,
-            Predicate<V> p) throws IOException, InterruptedException {
+            BiFunction<String[], Map<String, String>, V> chiLambda) throws IOException, InterruptedException {
         final Logger logger = LoggerFactory.getLogger(Base.class);
 
         final AtomicLong auxCounter = new AtomicLong(0);
@@ -162,8 +161,7 @@ public abstract class Base {
                             nycLambda,
                             chiKey,
                             chiLambda,
-                            srCodeToDescription,
-                            p));
+                            srCodeToDescription));
 
                     batch.clear();
                 }
@@ -178,8 +176,7 @@ public abstract class Base {
                         nycLambda,
                         chiKey,
                         chiLambda,
-                        srCodeToDescription,
-                        p));
+                        srCodeToDescription));
             }
         }
 
@@ -206,7 +203,7 @@ public abstract class Base {
         private final BiFunction<Long, String[], K> chiKey;
         private final BiFunction<String[], Map<String, String>, V> chiValue;
         private final Map<String, String> chicago_codes;
-        private final Predicate<V> p;
+
         public Reader(
                 final IMap<K, V> imap,
                 final List<String> lines,
@@ -215,8 +212,7 @@ public abstract class Base {
                 final Function<String[], V> nycLambda,
                 final BiFunction<Long, String[], K> chiKey,
                 final BiFunction<String[], Map<String, String>, V> chiLambda,
-                final Map<String, String> srCodeToDescription,
-                final Predicate<V> p) {
+                final Map<String, String> srCodeToDescription) {
             this.imap = imap;
             this.lines = lines;
             this.counter = counter;
@@ -225,7 +221,6 @@ public abstract class Base {
             this.chiKey = chiKey;
             this.chiValue = chiLambda;
             this.chicago_codes = srCodeToDescription;
-            this.p = p;
         }
 
         @Override
@@ -240,7 +235,7 @@ public abstract class Base {
                 final String[] data = line.split(";");
 
                 final V value = lambda.apply(data);
-                if (value == null || !p.test(value)) {
+                if (value == null) {
                     continue;
                 }
 

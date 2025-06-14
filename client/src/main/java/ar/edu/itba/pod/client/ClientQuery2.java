@@ -57,8 +57,7 @@ public class ClientQuery2 extends Base {
                             (long) (Double.parseDouble(line[8]) / q)),
                     (line, sr) -> new ComplaintQuadrant(sr.get(line[1]), line[9],
                             (long) (Double.parseDouble(line[10]) / q),
-                            (long) (Double.parseDouble(line[11]) / q)),
-                    p -> true);
+                            (long) (Double.parseDouble(line[11]) / q)));
 
             // MapReduce Job
             Job<Long, ComplaintQuadrant> job = jobTracker.newJob(requestsKeyValueSource);

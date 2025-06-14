@@ -2,9 +2,7 @@ package ar.edu.itba.pod.client;
 
 import ar.edu.itba.pod.common.Resolutions;
 import ar.edu.itba.pod.v0Mappers.GenericCountMapper;
-import ar.edu.itba.pod.v1.query5.ResolutionsCHIMapper;
 import ar.edu.itba.pod.v1.query5.ResolutionsCollator;
-import ar.edu.itba.pod.v1.query5.ResolutionsNYCMapper;
 import ar.edu.itba.pod.v1.query5.ResolutionsReducerFactory;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.core.HazelcastInstance;
@@ -46,11 +44,9 @@ public class ClientQuery5 extends Base {
             // Job Tracker
             JobTracker jobTracker = hz.getJobTracker("solvedYTD");
 
-            parseCsv(requestsIMap, line -> new Resolutions(line[2], line[5], LocalDateTime.parse(line[1], getDateTimeFormatter())),
-                    (line, ugh) -> new Resolutions(line[2], line[3], LocalDateTime.parse(line[4], getDateTimeFormatter())),
-                    p -> env.getProperty("city").equals("NYC")
-                            ? p.getStatus().equals("Closed")
-                            : p.getStatus().equals("Open"));
+            parseCsv(requestsIMap,
+                    line -> !line[5].equals("Closed") ? new Resolutions(line[2], LocalDateTime.parse(line[1], getDateTimeFormatter())) : null,
+                    (line, unused) -> line[3].equals("Open") ? new Resolutions(line[2], LocalDateTime.parse(line[4], getDateTimeFormatter())) : null);
 
             // MapReduce Job
             Job<Long, Resolutions> job = jobTracker.newJob(requestsKeyValueSource);

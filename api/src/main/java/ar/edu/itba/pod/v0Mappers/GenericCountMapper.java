@@ -3,6 +3,7 @@ package ar.edu.itba.pod.v0Mappers;
 import com.hazelcast.mapreduce.Context;
 import com.hazelcast.mapreduce.Mapper;
 
+@SuppressWarnings("deprecation")
 public class GenericCountMapper<T> implements Mapper<Long, T, T, Long> {
     private static final Long ONE = 1L;
 
