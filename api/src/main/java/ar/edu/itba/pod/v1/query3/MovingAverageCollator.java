@@ -7,7 +7,6 @@ import java.util.*;
 
 @SuppressWarnings("deprecation")
 public class MovingAverageCollator implements Collator<Map.Entry<Resolutions, Long>, List<String>> {
-
     private final int w;
 
     public MovingAverageCollator(int w) {
@@ -16,30 +15,28 @@ public class MovingAverageCollator implements Collator<Map.Entry<Resolutions, Lo
 
     @Override
     public List<String> collate(Iterable<Map.Entry<Resolutions, Long>> values) {
+        final Map<String, TreeMap<Integer, long[]>> grouped = new TreeMap<>();
 
-        Map<String, TreeMap<Integer, long[]>> grouped = new TreeMap<>();
+        for (final Map.Entry<Resolutions, Long> entry : values) {
+            final Resolutions r = entry.getKey();
 
-        for (Map.Entry<Resolutions, Long> entry : values) {
-            Resolutions r = entry.getKey();
-
-            TreeMap<Integer, long[]> yearsMap = grouped
+            final TreeMap<Integer, long[]> yearsMap = grouped
                     .computeIfAbsent(r.getAgency(), k -> new TreeMap<>());
 
-            long[] months = yearsMap.computeIfAbsent(r.getYear(), k -> new long[12]);
+            final long[] months = yearsMap.computeIfAbsent(r.getYear(), k -> new long[12]);
             months[r.getMonth() - 1] = entry.getValue();
         }
 
-        List<String> result = new ArrayList<>();
+        final List<String> result = new ArrayList<>();
 
-        for (Map.Entry<String, TreeMap<Integer, long[]>> agencyEntry : grouped.entrySet()) {
-            String agency = agencyEntry.getKey();
+        for (final Map.Entry<String, TreeMap<Integer, long[]>> agencyEntry : grouped.entrySet()) {
+            final String agency = agencyEntry.getKey();
 
             for (Map.Entry<Integer, long[]> yearEntry : agencyEntry.getValue().entrySet()) {
-                int year = yearEntry.getKey();
-                long[] monthly = yearEntry.getValue();
+                final int year = yearEntry.getKey();
+                final long[] monthly = yearEntry.getValue();
 
                 long rollingSum = 0;
-
                 for (int i = 0; i < 12; i++) {
                     rollingSum += monthly[i];
                     double avg;
@@ -48,21 +45,24 @@ public class MovingAverageCollator implements Collator<Map.Entry<Resolutions, Lo
                         if (i + 1 > w) {
                             rollingSum -= monthly[i - w];
                         }
+
                         avg = rollingSum / (double) w;
                     } else {
                         avg = rollingSum / (double) (i + 1);
                     }
-                    double floor = Math.floor(avg * 100) / 100.0;
-                    StringBuilder sb = new StringBuilder()
+
+                    final double floor = Math.floor(avg * 100) / 100.0;
+                    final StringBuilder sb = new StringBuilder()
                             .append(agency).append(';')
                             .append(year).append(';')
                             .append(i + 1).append(';')
                             .append(String.format(Locale.ROOT, "%.2f", floor));
-                    result.add(sb.toString());
 
+                    result.add(sb.toString());
                 }
             }
         }
+
         return result;
     }
 }

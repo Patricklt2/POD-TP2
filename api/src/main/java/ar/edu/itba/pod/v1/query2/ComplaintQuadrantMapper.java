@@ -9,7 +9,7 @@ import com.hazelcast.mapreduce.Mapper;
 @SuppressWarnings("deprecation")
 public class ComplaintQuadrantMapper implements Mapper<Long, ComplaintQuadrant, NeighborhoodQuadrant, String> {
     @Override
-    public void map(Long key, ComplaintQuadrant row, Context<NeighborhoodQuadrant, String> context) {
+    public void map(final Long key, final ComplaintQuadrant row, final Context<NeighborhoodQuadrant, String> context) {
         context.emit(new NeighborhoodQuadrant(row.getNeighborhood(), row.getLocation()), row.getType());
     }
 }

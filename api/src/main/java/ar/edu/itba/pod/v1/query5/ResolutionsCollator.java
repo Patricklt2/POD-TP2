@@ -11,7 +11,7 @@ import java.util.stream.StreamSupport;
 @SuppressWarnings("deprecation")
 public class ResolutionsCollator implements Collator<Map.Entry<Resolutions, Long>, List<Map.Entry<Resolutions, Long>>> {
     @Override
-    public List<Map.Entry<Resolutions, Long>> collate(Iterable<Map.Entry<Resolutions, Long>> values) {
+    public List<Map.Entry<Resolutions, Long>> collate(final Iterable<Map.Entry<Resolutions, Long>> values) {
         List<Map.Entry<Resolutions, Long>> list = StreamSupport.stream(values.spliterator(), false)
                 .sorted(Comparator.<Map.Entry<Resolutions, Long>, String>comparing(e -> e.getKey().getAgency())
                         .reversed()
@@ -23,7 +23,7 @@ public class ResolutionsCollator implements Collator<Map.Entry<Resolutions, Long
         String agency = "";
         int year = 0;
 
-        for (Map.Entry<Resolutions, Long> entry : list) {
+        for (final Map.Entry<Resolutions, Long> entry : list) {
             if (entry.getKey().getYear() != year || !entry.getKey().getAgency().equals(agency)) {
                 aux = 0;
                 agency = entry.getKey().getAgency();

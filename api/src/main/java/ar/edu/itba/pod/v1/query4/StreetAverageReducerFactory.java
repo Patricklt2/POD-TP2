@@ -9,7 +9,7 @@ import com.hazelcast.mapreduce.ReducerFactory;
 @SuppressWarnings("deprecation")
 public class StreetAverageReducerFactory implements ReducerFactory<String, String, Long> {
     @Override
-    public Reducer<String, Long> newReducer(String key) {
+    public Reducer<String, Long> newReducer(final String key) {
         return new StreetAverageReducer();
     }
 
@@ -17,7 +17,7 @@ public class StreetAverageReducerFactory implements ReducerFactory<String, Strin
         private final Set<String> types = ConcurrentHashMap.newKeySet();
 
         @Override
-        public void reduce(String type) {
+        public void reduce(final String type) {
             types.add(type);
         }
 

@@ -10,7 +10,7 @@ import java.util.stream.StreamSupport;
 @SuppressWarnings("deprecation")
 public class StreetAverageCollator implements Collator<Map.Entry<String, Long>, List<Map.Entry<String, Long>>> {
     @Override
-    public List<Map.Entry<String, Long>> collate(Iterable<Map.Entry<String, Long>> values) {
+    public List<Map.Entry<String, Long>> collate(final Iterable<Map.Entry<String, Long>> values) {
         return StreamSupport.stream(values.spliterator(), false)
                 .sorted(Comparator.<Map.Entry<String, Long>>comparingLong(Map.Entry::getValue).reversed()
                         .thenComparing(entry -> entry.getKey()))

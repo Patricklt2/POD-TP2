@@ -14,7 +14,7 @@ public class ComplaintQuadrantCollator
         implements Collator<Map.Entry<NeighborhoodQuadrant, String>, List<Map.Entry<NeighborhoodQuadrant, String>>> {
     @Override
     public List<Map.Entry<NeighborhoodQuadrant, String>> collate(
-            Iterable<Map.Entry<NeighborhoodQuadrant, String>> values) {
+            final Iterable<Map.Entry<NeighborhoodQuadrant, String>> values) {
         return StreamSupport.stream(values.spliterator(), false)
                 .sorted(Comparator
                         .comparing((Map.Entry<NeighborhoodQuadrant, String> entry) -> entry.getKey().getNeighborhood())

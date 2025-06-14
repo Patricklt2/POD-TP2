@@ -16,7 +16,7 @@ import com.hazelcast.mapreduce.ReducerFactory;
 @SuppressWarnings("deprecation")
 public class ComplaintQuadrantReducerFactory implements ReducerFactory<NeighborhoodQuadrant, String, String> {
     @Override
-    public Reducer<String, String> newReducer(NeighborhoodQuadrant key) {
+    public Reducer<String, String> newReducer(final NeighborhoodQuadrant key) {
         return new PostComplaintQuadrantReducer();
     }
 
@@ -24,7 +24,7 @@ public class ComplaintQuadrantReducerFactory implements ReducerFactory<Neighborh
         final private Map<String, AtomicLong> counts = new ConcurrentHashMap<>();
 
         @Override
-        public void reduce(String value) {
+        public void reduce(final String value) {
             counts.computeIfAbsent(value, k -> new AtomicLong(0)).incrementAndGet();
         }
 
@@ -64,7 +64,7 @@ public class ComplaintQuadrantReducerFactory implements ReducerFactory<Neighborh
         private String winner = null;
 
         @Override
-        public void reduce(String value) {
+        public void reduce(final String value) {
             lock.lock();
             try {
                 final long count = counts.merge(value, 1L, Long::sum);
