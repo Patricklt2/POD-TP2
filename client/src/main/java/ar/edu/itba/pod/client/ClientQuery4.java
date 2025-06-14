@@ -23,7 +23,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -107,7 +109,9 @@ public class ClientQuery4 extends Base {
 
             final double percenter = (double) 100 / typesCount;
 
-            final DecimalFormat df = new DecimalFormat("#.##");
+            final DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
+            symbols.setDecimalSeparator('.');
+            final DecimalFormat df = new DecimalFormat("#.##", symbols);
             df.setRoundingMode(RoundingMode.DOWN);
 
             for (Map.Entry<String, Long> entry : result) {
