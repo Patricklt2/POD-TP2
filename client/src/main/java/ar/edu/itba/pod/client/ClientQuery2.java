@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public class ClientQuery2 extends Base {
-
     private static final Logger logger = LoggerFactory.getLogger(ClientQuery2.class);
 
     public ClientQuery2() {

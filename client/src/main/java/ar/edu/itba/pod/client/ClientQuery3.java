@@ -23,7 +23,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class ClientQuery3 extends Base {
-
     private static final Logger logger = LoggerFactory.getLogger(ClientQuery3.class);
 
     public ClientQuery3() {

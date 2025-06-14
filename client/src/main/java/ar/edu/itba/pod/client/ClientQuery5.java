@@ -96,5 +96,3 @@ public class ClientQuery5 extends Base {
         }
     }
 }
-
-// [A,Y,D] --> [A,Y,D] [C] --> <[A, Y, D], [SUM]>
