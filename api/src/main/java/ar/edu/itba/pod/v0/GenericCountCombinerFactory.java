@@ -1,4 +1,4 @@
-package ar.edu.itba.pod.v0Generics;
+package ar.edu.itba.pod.v0;
 
 import com.hazelcast.mapreduce.Combiner;
 import com.hazelcast.mapreduce.CombinerFactory;

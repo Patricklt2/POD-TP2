@@ -1,9 +1,9 @@
 package ar.edu.itba.pod.client;
 
 import ar.edu.itba.pod.common.Resolutions;
-import ar.edu.itba.pod.v0Generics.GenericCountCombinerFactory;
-import ar.edu.itba.pod.v0Generics.GenericCountMapper;
-import ar.edu.itba.pod.v0Generics.GenericCountReducerFactory;
+import ar.edu.itba.pod.v0.GenericCountCombinerFactory;
+import ar.edu.itba.pod.v0.GenericCountMapper;
+import ar.edu.itba.pod.v0.GenericCountReducerFactory;
 import ar.edu.itba.pod.v1.query5.ResolutionsCollator;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.core.HazelcastInstance;
