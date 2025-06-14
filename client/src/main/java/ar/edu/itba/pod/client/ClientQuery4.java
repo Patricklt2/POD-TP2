@@ -25,6 +25,8 @@ import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
 public class ClientQuery4 extends Base {
@@ -51,7 +53,7 @@ public class ClientQuery4 extends Base {
 
             if (!neighbourhood.getCity().equals(city)) {
                 logger.warn("The neighbourhood {} does not match the city {}", neighbourhood, city);
-                writeOutputToCsvQuery4(List.of());
+                writeOutputToCsvQuery4(List.of(), 1);
                 return;
             }
 
@@ -62,9 +64,25 @@ public class ClientQuery4 extends Base {
 
             final JobTracker tracker = hz.getJobTracker("averages");
 
+            final int maxTypesCount = (int) getTypesCount();
+            final Set<String> types = ConcurrentHashMap.newKeySet(maxTypesCount + 1);
+
             parseCsv(entries,
-                    line -> neighbourhood.hequals(line[6]) ? new AddressEvent(new Address(line[4]), line[3]) : null,
-                    (line, sr) -> neighbourhood.hequals(line[9]) ? new AddressEvent(new Address(line[6].charAt(0), line[7], line[8]), sr.get(line[1])) : null);
+                    line -> {
+                        if (types.size() < maxTypesCount) {
+                            types.add(line[3]);
+                        }
+
+                        return neighbourhood.hequals(line[6]) ? new AddressEvent(new Address(line[4]), line[3]) : null;
+                    },
+                    (line, sr) -> {
+                        if (types.size() < maxTypesCount) {
+                            types.add(line[1]);
+                        }
+
+                        return neighbourhood.hequals(line[9]) ? new AddressEvent(new Address(line[6].charAt(0), line[7], line[8]), sr.get(line[1])) : null;
+                    }
+            );
 
             final Job<Long, AddressEvent> job = tracker.newJob(source);
 
@@ -73,13 +91,13 @@ public class ClientQuery4 extends Base {
                     .reducer(new StreetAverageReducerFactory())
                     .submit(new StreetAverageCollator());
 
-            writeOutputToCsvQuery4(future.get());
+            writeOutputToCsvQuery4(future.get(), types.size());
         } finally {
             HazelcastClient.shutdownAll();
         }
     }
 
-    private static void writeOutputToCsvQuery4(List<Map.Entry<String, Long>> result) {
+    private static void writeOutputToCsvQuery4(List<Map.Entry<String, Long>> result, int typesCount) {
         try (BufferedWriter writer = Files
                 .newBufferedWriter(Paths.get(env.getProperty("outPath"), "query4" + env.getProperty("city") + "Output.csv"),
                         StandardOpenOption.CREATE,
@@ -87,7 +105,7 @@ public class ClientQuery4 extends Base {
                         StandardOpenOption.WRITE)) {
             writer.write("street;typePercentage\n");
 
-            final double percenter = (double) 100 / getTypesCount();
+            final double percenter = (double) 100 / typesCount;
 
             final DecimalFormat df = new DecimalFormat("#.##");
             df.setRoundingMode(RoundingMode.DOWN);
