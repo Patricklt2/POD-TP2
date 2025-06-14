@@ -1,6 +1,7 @@
 package ar.edu.itba.pod.client;
 
 import ar.edu.itba.pod.common.Resolutions;
+import ar.edu.itba.pod.v0Mappers.GenericCountMapper;
 import ar.edu.itba.pod.v1.query5.ResolutionsCHIMapper;
 import ar.edu.itba.pod.v1.query5.ResolutionsCollator;
 import ar.edu.itba.pod.v1.query5.ResolutionsNYCMapper;
@@ -46,12 +47,15 @@ public class ClientQuery5 extends Base {
             JobTracker jobTracker = hz.getJobTracker("solvedYTD");
 
             parseCsv(requestsIMap, line -> new Resolutions(line[2], line[5], LocalDateTime.parse(line[1], getDateTimeFormatter())),
-                    (line, ugh) -> new Resolutions(line[2], line[3], LocalDateTime.parse(line[4], getDateTimeFormatter())));
+                    (line, ugh) -> new Resolutions(line[2], line[3], LocalDateTime.parse(line[4], getDateTimeFormatter())),
+                    p -> env.getProperty("city").equals("NYC")
+                            ? p.getStatus().equals("Closed")
+                            : p.getStatus().equals("Open"));
 
             // MapReduce Job
             Job<Long, Resolutions> job = jobTracker.newJob(requestsKeyValueSource);
             ICompletableFuture<List<Map.Entry<Resolutions, Long>>> future = job
-                    .mapper(env.get("city").equals("NYC") ? new ResolutionsNYCMapper() : new ResolutionsCHIMapper())
+                    .mapper(new GenericCountMapper<>())
                     .reducer(new ResolutionsReducerFactory())
                     .submit(new ResolutionsCollator());
 

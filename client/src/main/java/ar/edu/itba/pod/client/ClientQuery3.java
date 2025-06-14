@@ -1,6 +1,7 @@
 package ar.edu.itba.pod.client;
 
 import ar.edu.itba.pod.common.Resolutions;
+import ar.edu.itba.pod.v0Mappers.GenericCountMapper;
 import ar.edu.itba.pod.v1.query3.MovingAverageMapper;
 import ar.edu.itba.pod.v1.query3.MovingAverageReducerFactory;
 import ar.edu.itba.pod.v1.query3.MovingAverageCollator;
@@ -50,13 +51,16 @@ public class ClientQuery3 extends Base {
             parseCsv(
                     requestsIMap,
                     line -> new Resolutions(line[2], line[5], LocalDateTime.parse(line[1], getDateTimeFormatter())),
-                    (line, unused) -> new Resolutions(line[2], line[3], LocalDateTime.parse(line[4], getDateTimeFormatter()))
+                    (line, unused) -> new Resolutions(line[2], line[3], LocalDateTime.parse(line[4], getDateTimeFormatter())),
+                    p -> env.getProperty("city").equals("NYC")
+                            ? !p.getStatus().equals("Closed")
+                            : p.getStatus().equals("Open")
             );
 
             // MapReduce
             Job<Long, Resolutions> job = tracker.newJob(source);
             ICompletableFuture<List<String>> future = job
-                    .mapper(new MovingAverageMapper(env.getProperty("city")))
+                    .mapper(new GenericCountMapper<>())
                     .reducer(new MovingAverageReducerFactory())
                     .submit(new MovingAverageCollator(Integer.parseInt(env.getProperty("w"))));
 

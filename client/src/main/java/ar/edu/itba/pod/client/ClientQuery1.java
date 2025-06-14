@@ -1,5 +1,6 @@
 package ar.edu.itba.pod.client;
 
+import ar.edu.itba.pod.v0Mappers.GenericCountMapper;
 import ar.edu.itba.pod.v1.query1.ComplaintCollator;
 import ar.edu.itba.pod.v1.query1.ComplaintCombinerFactory;
 import ar.edu.itba.pod.v1.query1.ComplaintMapper;
@@ -45,12 +46,13 @@ public class ClientQuery1 extends Base {
             JobTracker jobTracker = hz.getJobTracker("complaints");
 
             parseCsv(requestsIMap, line -> new StringBuilder().append(line[3]).append(';').append(line[2]).toString(),
-                    (line, srCodeToDescription) -> new StringBuilder().append(srCodeToDescription.get(line[1])).append(';').append(line[2]).toString());
+                    (line, srCodeToDescription) -> new StringBuilder().append(srCodeToDescription.get(line[1])).append(';').append(line[2]).toString(),
+                    p -> true);
 
             // MapReduce Job
             Job<Long, String> job = jobTracker.newJob(requestsKeyValueSource);
             ICompletableFuture<List<Map.Entry<String, Long>>> future = job
-                    .mapper(new ComplaintMapper())
+                    .mapper(new GenericCountMapper<>())
                     .combiner(new ComplaintCombinerFactory())
                     .reducer(new ComplaintReducerFactory())
                     .submit(new ComplaintCollator());

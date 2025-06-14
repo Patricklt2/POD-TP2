@@ -84,7 +84,7 @@ public class ClientQuery4 extends Base {
 
                         return neighbourhood.hequals(line[9]) ? new AddressEvent(new Address(line[6].charAt(0), line[7], line[8]), sr.get(line[1])) : null;
                     }
-            );
+            , p -> true);
 
             final Job<Long, AddressEvent> job = tracker.newJob(source);
 
