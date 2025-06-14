@@ -48,24 +48,24 @@ public abstract class Base {
         requireProperty("city");
         requireProperty("addresses");
 
-        List<String> addresses = Arrays.stream(env.get("addresses").toString().split(";")).toList();
+        final List<String> addresses = Arrays.stream(env.get("addresses").toString().split(";")).toList();
 
         if (addresses.isEmpty()) {
             throw new IllegalArgumentException("-Daddresses is required and cannot be empty");
         }
 
         // Group Config
-        GroupConfig groupConfig = new GroupConfig().setName("g1-tp2-1234").setPassword("g1-tp2-1234-pass");
+        final GroupConfig groupConfig = new GroupConfig().setName("g1-tp2-1234").setPassword("g1-tp2-1234-pass");
 
         // Client Network Config
-        ClientNetworkConfig clientNetworkConfig = new ClientNetworkConfig();
+        final ClientNetworkConfig clientNetworkConfig = new ClientNetworkConfig();
 
-        for (String address : addresses) {
+        for (final String address : addresses) {
             clientNetworkConfig.addAddress(address);
         }
 
         // Client Config
-        ClientConfig clientConfig = new ClientConfig().setGroupConfig(groupConfig)
+        final ClientConfig clientConfig = new ClientConfig().setGroupConfig(groupConfig)
                 .setNetworkConfig(clientNetworkConfig);
 
         // Node Client
@@ -73,7 +73,8 @@ public abstract class Base {
     }
 
     static void requireProperty(String key) {
-        String value = env.getProperty(key);
+        final String value = env.getProperty(key);
+
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException(String.format("-D%s is required and cannot be empty", key));
         }
@@ -83,6 +84,7 @@ public abstract class Base {
         if (hazelcastInstance == null) {
             throw new IllegalStateException("HazelcastInstance not initialized. Call run() first.");
         }
+
         return hazelcastInstance;
     }
 
@@ -92,7 +94,6 @@ public abstract class Base {
 
     protected static Path getRequestsFilePath(String city) {
         final String inPath = env.getProperty("inPath");
-
         final String type = env.getProperty("ev") != null ? "-Short" : "";
 
         return switch (city.toUpperCase()) {
@@ -103,7 +104,7 @@ public abstract class Base {
     }
 
     protected static Path getTypesFilePath(String city) {
-        String inPath = env.getProperty("inPath");
+        final String inPath = env.getProperty("inPath");
 
         return switch (city.toUpperCase()) {
             case "NYC" -> Paths.get(inPath, "serviceTypesNYC.csv");
@@ -142,7 +143,7 @@ public abstract class Base {
         }
 
         logger.debug("Loading file: {}", getRequestsFilePath(city));
-        try (Stream<String> lines = Files.lines(getRequestsFilePath(city), StandardCharsets.UTF_8)) {
+        try (final Stream<String> lines = Files.lines(getRequestsFilePath(city), StandardCharsets.UTF_8)) {
             final List<String> batch = new ArrayList<>(BATCH_SIZE);
             final Iterator<String> iterator = lines.iterator();
 

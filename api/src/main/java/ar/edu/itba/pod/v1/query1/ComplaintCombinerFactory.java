@@ -6,7 +6,7 @@ import com.hazelcast.mapreduce.CombinerFactory;
 @SuppressWarnings("deprecation")
 public class ComplaintCombinerFactory implements CombinerFactory<String, Long, Long> {
     @Override
-    public Combiner<Long, Long> newCombiner(String key) {
+    public Combiner<Long, Long> newCombiner(final String key) {
         return new ComplaintCombiner();
     }
 
@@ -19,7 +19,7 @@ public class ComplaintCombinerFactory implements CombinerFactory<String, Long, L
         }
 
         @Override
-        public void combine(Long value) {
+        public void combine(final Long value) {
             sum += value;
         }
 
