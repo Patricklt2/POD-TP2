@@ -34,7 +34,7 @@ public class ClientQuery3 extends Base {
     protected void run() throws InterruptedException {
         requireProperty("w");
 
-        final double w = getW();
+        final int w = getW();
         if (w < 1 || 12 < w) {
             logger.error("Invalid value for 'w': {}. It must be in the range [1, 12].", w);
             throw new IllegalArgumentException("Invalid value for 'w'. It must be in the range [1, 12].");
