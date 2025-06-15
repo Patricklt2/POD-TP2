@@ -112,11 +112,15 @@ public enum HeuristicNeighbourhood {
     }
 
     public boolean hequals(final String s) {
+        if (s == null || s.length() < indexs[indexs.length - 1]) {
+            return false;
+        }
+
         for (int test = 0; test < indexs.length; test++) {
             int i = indexs[test];
             char c = characters[test];
 
-            if (i >= s.length() || s.charAt(i) != c) {
+            if (s.charAt(i) != c) {
                 return false;
             }
         }
