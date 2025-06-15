@@ -81,7 +81,7 @@ public enum HeuristicNeighbourhood {
     WOODLAWN(0, 1, 4, "WOODLAWN"),
     CLEARING(0, 1, 2, 6, "CLEARING"),
     EAST_SIDE(0, 1, 5, "EAST SIDE"),
-    OHARE(1, 2, 3, 4, "OHARE"),
+    OHARE(0, 1, "OHARE"),
     PULLMAN(0, 1, "PULLMAN"),
     ROSELAND(0, 2, "ROSELAND"),
     WEST_LAWN(0, 5, "WEST LAWN");
