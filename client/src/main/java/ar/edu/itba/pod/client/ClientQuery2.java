@@ -49,7 +49,7 @@ public class ClientQuery2 extends Base {
             // Job Tracker
             JobTracker jobTracker = hz.getJobTracker("complaints");
 
-            final Double q = getQ();
+            final double q = getQ();
             parseCsv(requestsIMap,
                     line -> new ComplaintQuadrant(line[3], line[6],
                             (long) (Double.parseDouble(line[7]) / q),
@@ -99,7 +99,7 @@ public class ClientQuery2 extends Base {
         }
     }
 
-    protected static Double getQ() {
+    protected static double getQ() {
         return Double.parseDouble(env.getProperty("q"));
     }
 }
