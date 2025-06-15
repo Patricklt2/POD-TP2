@@ -6,7 +6,7 @@
   <artifactId>tpe2-g1-parent</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>tpe2-g2-parent</name>
+  <name>tpe2-g1-parent</name>
   <modules>
     <module>api</module>
     <module>server</module>
