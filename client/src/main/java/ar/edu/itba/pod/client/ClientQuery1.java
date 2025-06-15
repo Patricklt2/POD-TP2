@@ -37,11 +37,11 @@ public class ClientQuery1 extends Base {
 
         try {
             HazelcastInstance hz = getHazelcastInstance();
-            IMap<Long, String> requestsIMap = hz.getMap("requests");
+            IMap<Long, String> requestsIMap = hz.getMap("g1-requests");
             KeyValueSource<Long, String> requestsKeyValueSource = KeyValueSource.fromMap(requestsIMap);
 
             // Job Tracker
-            JobTracker jobTracker = hz.getJobTracker("complaints");
+            JobTracker jobTracker = hz.getJobTracker("g1-complaints");
 
             parseCsv(requestsIMap, line -> new StringBuilder().append(line[3]).append(';').append(line[2]).toString(),
                     (line, srCodeToDescription) -> new StringBuilder().append(srCodeToDescription.get(line[1]))

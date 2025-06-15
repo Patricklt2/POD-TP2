@@ -50,9 +50,9 @@ public class ClientQuery3 extends Base {
 
         try {
             HazelcastInstance hz = getHazelcastInstance();
-            IMap<Long, Resolutions> requestsIMap = hz.getMap("requestsMovingAvg");
+            IMap<Long, Resolutions> requestsIMap = hz.getMap("g1-requestsMovingAvg");
             KeyValueSource<Long, Resolutions> source = KeyValueSource.fromMap(requestsIMap);
-            JobTracker tracker = hz.getJobTracker("movingAvg");
+            JobTracker tracker = hz.getJobTracker("g1-movingAvg");
 
             parseCsv(
                     requestsIMap,

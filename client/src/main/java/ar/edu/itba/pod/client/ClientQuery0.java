@@ -25,7 +25,7 @@ public class ClientQuery0 extends Base {
 
         try {
             final HazelcastInstance hz = getHazelcastInstance();
-            final IMap<Long, Boolean> map = hz.getMap("reader-speed-test");
+            final IMap<Long, Boolean> map = hz.getMap("g1-reader-speed-test");
             final long count = parseCsv(map, line -> true, (line, sr) -> true);
             logger.info("Total records processed: {}", count);
         } finally {

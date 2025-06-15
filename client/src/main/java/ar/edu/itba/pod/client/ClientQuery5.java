@@ -39,11 +39,11 @@ public class ClientQuery5 extends Base {
 
         try {
             HazelcastInstance hz = getHazelcastInstance();
-            IMap<Long, Resolutions> requestsIMap = hz.getMap("requestsYTD");
+            IMap<Long, Resolutions> requestsIMap = hz.getMap("g1-requestsYTD");
             KeyValueSource<Long, Resolutions> requestsKeyValueSource = KeyValueSource.fromMap(requestsIMap);
 
             // Job Tracker
-            JobTracker jobTracker = hz.getJobTracker("solvedYTD");
+            JobTracker jobTracker = hz.getJobTracker("g1-solvedYTD");
 
             parseCsv(requestsIMap,
                     line -> line[5].equals("Closed")

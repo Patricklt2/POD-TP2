@@ -68,10 +68,10 @@ public class ClientQuery4 extends Base {
 
             final HazelcastInstance hz = getHazelcastInstance();
 
-            final IMap<Long, AddressEvent> entries = hz.getMap("addresses");
+            final IMap<Long, AddressEvent> entries = hz.getMap("g1-addresses");
             final KeyValueSource<Long, AddressEvent> source = KeyValueSource.fromMap(entries);
 
-            final JobTracker tracker = hz.getJobTracker("averages");
+            final JobTracker tracker = hz.getJobTracker("g1-averages");
 
             final int maxTypesCount = (int) getTypesCount();
             final Set<String> types = ConcurrentHashMap.newKeySet(maxTypesCount + 1);

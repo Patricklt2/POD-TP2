@@ -50,11 +50,11 @@ public class ClientQuery2 extends Base {
 
         try {
             HazelcastInstance hz = getHazelcastInstance();
-            IMap<Long, ComplaintQuadrant> requestsIMap = hz.getMap("requests");
+            IMap<Long, ComplaintQuadrant> requestsIMap = hz.getMap("g1-requests");
             KeyValueSource<Long, ComplaintQuadrant> requestsKeyValueSource = KeyValueSource.fromMap(requestsIMap);
 
             // Job Tracker
-            JobTracker jobTracker = hz.getJobTracker("complaints");
+            JobTracker jobTracker = hz.getJobTracker("g1-requests");
 
             final double q = getQ();
             parseCsv(requestsIMap,
