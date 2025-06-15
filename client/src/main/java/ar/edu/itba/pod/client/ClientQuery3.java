@@ -33,6 +33,13 @@ public class ClientQuery3 extends Base {
     @Override
     protected void run() throws InterruptedException {
         requireProperty("w");
+
+        final double w = getW();
+        if (w < 1 || 12 < w) {
+            logger.error("Invalid value for 'w': {}. It must be in the range [1, 12].", w);
+            throw new IllegalArgumentException("Invalid value for 'w'. It must be in the range [1, 12].");
+        }
+
         super.run();
     }
 
@@ -62,7 +69,7 @@ public class ClientQuery3 extends Base {
                     .mapper(new GenericCountMapper<>())
                     .combiner(new GenericCountCombinerFactory<>())
                     .reducer(new GenericCountReducerFactory<>())
-                    .submit(new MovingAverageCollator(Integer.parseInt(env.getProperty("w"))));
+                    .submit(new MovingAverageCollator(getW()));
 
             writeOutputToCsvQuery3(future.get());
         } finally {
@@ -87,5 +94,9 @@ public class ClientQuery3 extends Base {
         } catch (IOException e) {
             logger.error("Error writing output for query 3", e);
         }
+    }
+
+    private static int getW() {
+        return Integer.parseInt(env.getProperty("w"));
     }
 }

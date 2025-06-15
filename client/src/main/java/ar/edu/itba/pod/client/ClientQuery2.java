@@ -33,6 +33,13 @@ public class ClientQuery2 extends Base {
 
     protected void run() throws InterruptedException {
         requireProperty("q");
+
+        final double q = getQ();
+        if (q <= 0 || 1 < q) {
+            logger.error("Invalid value for 'q': {}. It must be in the range (0, 1].", q);
+            throw new IllegalArgumentException("Invalid value for 'q'. It must be in the range (0, 1].");
+        }
+
         super.run();
     }
 

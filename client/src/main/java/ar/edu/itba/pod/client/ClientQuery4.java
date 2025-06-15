@@ -50,8 +50,15 @@ public class ClientQuery4 extends Base {
 
         try {
             final String city = env.getProperty("city");
-            final HeuristicNeighbourhood neighbourhood = HeuristicNeighbourhood
-                    .valueOf(env.getProperty("neighbourhood"));
+            final HeuristicNeighbourhood neighbourhood;
+
+            try {
+                neighbourhood = HeuristicNeighbourhood.valueOf(env.getProperty("neighbourhood"));
+            } catch (IllegalArgumentException e) {
+                logger.warn("The neighbourhood {} does not exist", env.getProperty("neighbourhood"), city);
+                writeOutputToCsvQuery4(List.of(), 1);
+                return;
+            }
 
             if (!neighbourhood.getCity().equals(city)) {
                 logger.warn("The neighbourhood {} does not match the city {}", neighbourhood, city);
@@ -109,7 +116,7 @@ public class ClientQuery4 extends Base {
                         StandardOpenOption.WRITE)) {
             writer.write("street;typePercentage\n");
 
-            final double percenter = (double) 100 / typesCount;
+            final double percenter = (double) 100 / Math.max(typesCount, 1);
 
             final DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
             symbols.setDecimalSeparator('.');
