@@ -1,6 +1,7 @@
 package ar.edu.itba.pod.client;
 
 import ar.edu.itba.pod.common.Resolutions;
+import ar.edu.itba.pod.v0.GenericCountCombinerFactory;
 import ar.edu.itba.pod.v0.GenericCountMapper;
 import ar.edu.itba.pod.v0.GenericCountReducerFactory;
 import ar.edu.itba.pod.v1.query3.MovingAverageCollator;
@@ -59,6 +60,7 @@ public class ClientQuery3 extends Base {
             Job<Long, Resolutions> job = tracker.newJob(source);
             ICompletableFuture<List<String>> future = job
                     .mapper(new GenericCountMapper<>())
+                    .combiner(new GenericCountCombinerFactory<>())
                     .reducer(new GenericCountReducerFactory<>())
                     .submit(new MovingAverageCollator(Integer.parseInt(env.getProperty("w"))));
 
